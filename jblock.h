@@ -5,6 +5,9 @@
 #include "direction.h"
 
 class JBlock : public Block {
+private:
+    std::vector<std::vector<std::pair<int, int>>> rotations;
+    int currentShapeIndex;
 public:
     // Constructor
     JBlock(int levelGenerated, Cell* baseCell);

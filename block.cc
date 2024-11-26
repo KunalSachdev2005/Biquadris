@@ -58,8 +58,8 @@ void Block::placeOnBoard(Board& board) {
 
     // Loop through each offset in the shape
     for (const auto& offset : shape) {
-        int new_row = baseCell->getCol() + offset.first;  // Calculate x position
-        int new_col = baseCell->getRow() + offset.second; // Calculate y position
+        int new_row = baseCell->getRow() - offset.first;  
+        int new_col = baseCell->getCol() + offset.second; 
 
         // Get the corresponding cell from the board and add to the cells vector
         Cell* cell = board.at(new_row, new_col);
