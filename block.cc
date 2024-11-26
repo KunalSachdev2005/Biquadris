@@ -46,8 +46,18 @@ const std::vector<std::pair<int, int>>& Block::getShape() const {
     return shape;
 }
 
+void Block::clearOldCells() {
+    for (Cell* cell : cells) {
+        if (cell) {
+            cell->setBlock(nullptr);  // Clear the block from the cell
+        }
+    }
+    cells.clear();  // Reset the cells vector
+}
+
 // Set base cell
 void Block::setBaseCell(Cell* base) {
+    clearOldCells();
     baseCell = base;
     placeOnBoard(base->getBoard());  // Recalculate block's position when base is set
 }

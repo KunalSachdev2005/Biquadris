@@ -16,6 +16,8 @@
 #include "zblock.h"
 #include "tblock.h"
 
+class Player;
+
 class Level {
 protected:
     int level; // Level Number

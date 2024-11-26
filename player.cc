@@ -1,7 +1,7 @@
 #include "player.h"
 
 // Constructor
-Player::Player(const std::string& playerName) 
+Player::Player(std::string playerName) 
     : name(playerName), board(), score(), highScore(), level(nullptr), turns(0), isTurn(false) {
     // Default level might be set elsewhere or through a setter
 }

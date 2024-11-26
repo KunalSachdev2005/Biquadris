@@ -32,17 +32,13 @@ Block* Board::getNextBlock() {
 
 void Board::setCurrentBlock(Block* block) {
     currentBlock = block;
+    currentBlock->setBaseCell(at(5,0));
 }
 
 void Board::setNextBlock(Block* block) {
     nextBlock = block;
+    nextBlock->setBaseCell(at(20,0));
 }
-
-/* Block* Board::createBlock() {
-    // Create a new block (for simplicity, assume creating an I-block here)
-    // This can be expanded to randomize block types later
-    return new Block(Type::I, at(0, cols / 2), {{0, 0}, {1, 0}, {2, 0}, {3, 0}}, 1);
-} */
 
 bool Board::canMove(Block* block, Direction dir) {
     // Get the current position of the base cell of the block

@@ -28,6 +28,7 @@ class Block { // Abstract Base Class
 
         // Virtual destructor
         virtual ~Block();
+        void clearOldCells();
 
         // Accessor methods
         Type getType() const;

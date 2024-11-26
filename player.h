@@ -6,6 +6,8 @@
 #include "score.h"
 #include "level.h"
 
+class Level;
+
 class Player {
 private:
     std::string name;
@@ -18,7 +20,7 @@ private:
 
 public:
     // Constructors
-    Player(const std::string& playerName = "Player");
+    Player(std::string playerName = "Player");
     ~Player();
 
     // Getters
