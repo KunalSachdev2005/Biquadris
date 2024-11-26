@@ -10,7 +10,7 @@
 int main() {
     Board b;
     Direction d = Direction::Right;
-    Block* block = new OBlock(0, b.at(0,3));
+    Block* block = new JBlock(0, b.at(4,8));
     b.printTextDisplay();
     b.moveBlock(block, Direction::Down);
     b.moveBlock(block, Direction::Down);
@@ -19,6 +19,9 @@ int main() {
     b.printTextDisplay();
     b.setCurrentBlock(block);
     b.rotateBlock(Direction::Clockwise);
+    b.moveBlock(block, Direction::Left);
+    b.moveBlock(block, Direction::Left);
+    b.moveBlock(block, Direction::Left);
     b.printTextDisplay();
     return 0;
 }

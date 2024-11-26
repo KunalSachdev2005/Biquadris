@@ -126,12 +126,14 @@ void Board::moveBlock(Block* block, Direction dir) {
         return; // If it can't move, exit the function
     }
 
+    // Capture the original base cell and shape before moving
+    Cell* originalBaseCell = block->getBaseCell();
+    const std::vector<std::pair<int, int>>& originalShape = block->getShape();
+
     // Clear the current cells occupied by the block
-    const std::vector<std::pair<int, int>>& shape = block->getShape();
-    Cell* baseCell = block->getBaseCell();
-    for (const auto& offset : shape) {
-        int row = baseCell->getRow() + offset.first;
-        int col = baseCell->getCol() + offset.second;
+    for (const auto& offset : originalShape) {
+        int row = originalBaseCell->getRow() - offset.first;
+        int col = originalBaseCell->getCol() + offset.second;
         Cell* cell = at(row, col);
         if (cell) {
             cell->setBlock(nullptr);  // Clear the block from the cell
@@ -139,9 +141,10 @@ void Board::moveBlock(Block* block, Direction dir) {
     }
 
     // Get the current position of the base cell
-    int originalRow = block->getBaseCell()->getRow();
-    int originalCol = block->getBaseCell()->getCol();
+    int originalRow = originalBaseCell->getRow();
+    int originalCol = originalBaseCell->getCol();
 
+    // Move the block's base cell
     switch (dir) {
         case Direction::Right:
             block->setBaseCell(at(originalRow, originalCol + 1)); // Right shift
@@ -149,14 +152,15 @@ void Board::moveBlock(Block* block, Direction dir) {
         case Direction::Left:
             block->setBaseCell(at(originalRow, originalCol - 1)); // Left shift
             break;
-        default:
-            block->setBaseCell(at(originalRow + 1, originalCol));
+        case Direction::Down:
+            block->setBaseCell(at(originalRow + 1, originalCol)); // Down shift
             break;
     }
 
     // After shifting, update the block's position on the board
     block->placeOnBoard(*this);
 }
+
 
 void Board::rotateBlock(Direction dir) {
     if (canRotate(currentBlock, dir)) {
