@@ -4,9 +4,12 @@
 class Block; // forward declaration
 
 class Cell {
+
+private:
     int row;
     int col;
     Block * block;
+    Board* board;
 
 public:
     // Constructor
@@ -15,6 +18,9 @@ public:
     // Accessor methods
     int getRow() const;
     int getCol() const;
+
+    Board& getBoard() const;
+    
     Block* getBlock() const;
 
     // Mutator methods

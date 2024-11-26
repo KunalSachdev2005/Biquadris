@@ -17,6 +17,10 @@ Block* Cell::getBlock() const {
     return block;
 }
 
+Board& Cell::getBoard() const {
+    return (*board);
+}
+
 // Mutator methods
 void Cell::setBlock(Block* block) {
     this->block = block;
