@@ -111,3 +111,8 @@ void Block::rotate(Direction dir) {
 void Block::setHeavy(bool heavy) {
     this->heavy = heavy;
 }
+
+// Setter for weight attribute
+void Block::setWeight(int weight) {
+    this->weight = weight;
+}
