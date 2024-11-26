@@ -37,7 +37,7 @@ public:
     bool canMove(Block* block, Direction dir);
     bool canRotate(Block* block, Direction dir);
     void moveBlock(Block* block, Direction dir);
-    void rotateBlock(Direction dir);
+    void rotateBlock(Block* block, Direction dir);
     void dropBlock(Block* block);
     bool isRowFull(int row);
     void clearRow(int row);

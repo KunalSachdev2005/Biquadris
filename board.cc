@@ -51,7 +51,7 @@ bool Board::canMove(Block* block, Direction dir) {
 
     // Determine the new positions for the block's cells based on the direction
     for (const auto& offset : shape) {
-        int newRow = baseCell->getRow() + offset.first;
+        int newRow = baseCell->getRow() - offset.first;  // Add offset
         int newCol = baseCell->getCol() + offset.second;
 
         switch (dir) {
@@ -71,8 +71,8 @@ bool Board::canMove(Block* block, Direction dir) {
             return false;  // The move is out of bounds
         }
 
-        // Check if the cell at the new position is occupied by another block (and not the current block)
-        Cell* newCell = at(newRow, newCol);  // Get the cell at the new position
+        // Check if the cell at the new position is occupied by another block
+        Cell* newCell = at(newRow, newCol);
         if (newCell->getBlock() != nullptr && newCell->getBlock() != block) {
             return false;  // Collision detected
         }
@@ -81,6 +81,7 @@ bool Board::canMove(Block* block, Direction dir) {
     // If all positions are valid, return true
     return true;
 }
+
 
 
 bool Board::canRotate(Block* block, Direction dir) {
@@ -101,7 +102,7 @@ bool Board::canRotate(Block* block, Direction dir) {
 
     // Check each cell that the rotated block will occupy
     for (const auto& offset : newShape) {
-        int newRow = baseCell->getRow() + offset.first;
+        int newRow = baseCell->getRow() - offset.first;
         int newCol = baseCell->getCol() + offset.second;
 
         // Check if the new position is within bounds
@@ -122,10 +123,6 @@ bool Board::canRotate(Block* block, Direction dir) {
 
 
 void Board::moveBlock(Block* block, Direction dir) {
-    if (!canMove(block, dir)) {
-        return; // If it can't move, exit the function
-    }
-
     // Capture the original base cell and shape before moving
     Cell* originalBaseCell = block->getBaseCell();
     const std::vector<std::pair<int, int>>& originalShape = block->getShape();
@@ -162,10 +159,10 @@ void Board::moveBlock(Block* block, Direction dir) {
 }
 
 
-void Board::rotateBlock(Direction dir) {
-    if (canRotate(currentBlock, dir)) {
+void Board::rotateBlock(Block* block, Direction dir) {
+    if (canRotate(block, dir)) {
         // Rotate the block (clockwise or counterclockwise)
-        currentBlock->rotate(dir);
+        block->rotate(dir);
     }
 }
 
@@ -174,16 +171,7 @@ void Board::dropBlock(Block* block) {
     Cell* baseCell = block->getBaseCell();
     int originalRow = baseCell->getRow();
     int originalCol = baseCell->getCol();
-    
-    const std::vector<std::pair<int, int>>& shape = block->getShape();
-    for (const auto& offset : shape) {
-        int row = originalRow + offset.first;
-        int col = originalCol + offset.second;
-        Cell* cell = at(row, col);
-        if (cell) {
-            cell->setBlock(nullptr);  // Clear the block from the cell
-        }
-    }
+
     // Try to move the block down as far as possible
     while (canMove(block, Direction::Down)) {
         // Move the block down one cell
