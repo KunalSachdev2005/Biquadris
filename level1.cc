@@ -24,11 +24,12 @@ Level1::~Level1() {}
 
 // Generate block for Level 1
 Block* Level1::generateBlock() {
+    // Get the base cell for the new block    
+    Cell* baseCell = player->getBoard()->at(20, 0);
+    Block* block = nullptr;
+    
     // Randomly select a block based on the probabilities
     int random = std::rand() % 12;
-    
-    Block* block = nullptr;
-    Cell* baseCell = player->getBoard()->at(20, 0);
 
     if (random < 1) {
         // 1/12 probability for S-block

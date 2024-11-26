@@ -1,12 +1,4 @@
-#include "cell.h"
 #include "level0.h"
-#include "iblock.h"
-#include "jblock.h"
-#include "lblock.h"
-#include "oblock.h"
-#include "sblock.h"
-#include "zblock.h"
-#include "tblock.h"
 
 Level0::Level0(const std::string& fileName, Player* player) : Level(0, player), currentIndex(0) {
     file.open(fileName);

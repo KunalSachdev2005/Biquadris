@@ -51,6 +51,9 @@ class Block { // Abstract Base Class
 
         // Rotate the block (using Direction)
         void rotate(Direction direction);
+
+        // Setter for heavy attribute
+        void setHeavy(bool heavy);
 };
 
 #endif // BLOCK_H

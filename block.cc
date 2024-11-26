@@ -106,3 +106,8 @@ void Block::rotate(Direction dir) {
     // Reposition the block on the board
     placeOnBoard(board);
 }
+
+// Setter for heavy attribute
+void Block::setHeavy(bool heavy) {
+    this->heavy = heavy;
+}

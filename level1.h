@@ -2,8 +2,6 @@
 #define LEVEL1_H
 
 #include "level.h"
-#include <memory>
-#include <cstdlib>
 
 class Level1 : public Level {
 public:
