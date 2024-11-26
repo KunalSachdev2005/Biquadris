@@ -34,6 +34,7 @@ class Block { // Abstract Base Class
         bool isHeavy() const;
         int getWeight() const;
         int getLevelGenerated() const;
+        int getCurrentShapeIndex() const;
         Cell* getBaseCell() const;
         const std::vector<Cell*>& getCells() const;
         const std::vector<std::pair<int, int>>& getShape() const;
@@ -48,6 +49,8 @@ class Block { // Abstract Base Class
         void updateCells();
 
         void initializeRotations(const std::vector<std::vector<std::pair<int, int>>>& rotations); // Initialize rotations
+
+        const std::vector<std::vector<std::pair<int, int>>>& getRotationShapes() const;
 
         // Rotate the block (using Direction)
         void rotate(Direction direction);

@@ -45,16 +45,81 @@ void Board::setNextBlock(Block* block) {
 } */
 
 bool Board::canMove(Block* block, Direction dir) {
-    // Implement logic to check if the block can move in the specified direction
-    // For simplicity, always return true for now
+    // Get the current position of the base cell of the block
+    Cell* baseCell = block->getBaseCell();
+    const std::vector<std::pair<int, int>>& shape = block->getShape();  // Get the current shape of the block
+
+    // Determine the new positions for the block's cells based on the direction
+    for (const auto& offset : shape) {
+        int newRow = baseCell->getRow() + offset.first;
+        int newCol = baseCell->getCol() + offset.second;
+
+        switch (dir) {
+            case Direction::Left:
+                newCol--;  // Move left
+                break;
+            case Direction::Right:
+                newCol++;  // Move right
+                break;
+            case Direction::Down:
+                newRow++;  // Move down
+                break;
+        }
+
+        // Check if the new position is out of bounds
+        if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols) {
+            return false;  // The move is out of bounds
+        }
+
+        // Check if the cell at the new position is occupied by another block (and not the current block)
+        Cell* newCell = at(newRow, newCol);  // Get the cell at the new position
+        if (newCell->getBlock() != nullptr && newCell->getBlock() != block) {
+            return false;  // Collision detected
+        }
+    }
+
+    // If all positions are valid, return true
     return true;
 }
 
+
 bool Board::canRotate(Block* block, Direction dir) {
-    // Implement logic to check if the block can rotate in the specified direction
-    // For simplicity, always return true for now
+    // Save the current shape and base cell of the block
+    std::vector<std::pair<int, int>> originalShape = block->getShape();
+    Cell* baseCell = block->getBaseCell();
+
+    // Retrieve the list of all rotation shapes
+    const auto& rotations = block->getRotationShapes();
+
+    // Determine the new rotation index based on the direction
+    int newRotationIndex = (dir == Direction::Clockwise) ? 
+                           (block->getCurrentShapeIndex() + 1) % rotations.size() : 
+                           (block->getCurrentShapeIndex() - 1 + rotations.size()) % rotations.size();
+
+    // Get the new shape based on the rotation index
+    const std::vector<std::pair<int, int>>& newShape = rotations[newRotationIndex];
+
+    // Check each cell that the rotated block will occupy
+    for (const auto& offset : newShape) {
+        int newRow = baseCell->getRow() + offset.first;
+        int newCol = baseCell->getCol() + offset.second;
+
+        // Check if the new position is within bounds
+        if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols) {
+            return false;  // Out of bounds
+        }
+
+        // Check for collisions (ensure the cell is either empty or occupied by the same block)
+        Cell* newCell = at(newRow, newCol);
+        if (newCell->getBlock() != nullptr && newCell->getBlock() != block) {
+            return false;  // Collision detected
+        }
+    }
+
+    // If no issues were found, the rotation is valid
     return true;
 }
+
 
 void Board::moveBlock(Direction dir) {
     if (!canMove(currentBlock, dir)) {
@@ -73,7 +138,7 @@ void Board::moveBlock(Direction dir) {
             currentBlock->setBaseCell(at(originalRow, originalCol - 1)); // Left shift
             break;
         default:
-            // Handle any other direction logic if needed (e.g., down)
+            currentBlock->setBaseCell(at(originalRow + 1, originalCol));
             break;
     }
 
@@ -89,9 +154,23 @@ void Board::rotateBlock(Direction dir) {
 }
 
 void Board::dropBlock(Block* block) {
-    // Drop the block down to the lowest valid position
-    // For simplicity, assume we just set the current block
-    currentBlock = block;
+    // Get the current position of the base cell
+    Cell* baseCell = block->getBaseCell();
+    int originalRow = baseCell->getRow();
+    int originalCol = baseCell->getCol();
+    
+    // Try to move the block down as far as possible
+    while (canMove(block, Direction::Down)) {
+        // Move the block down one cell
+        baseCell = at(originalRow + 1, originalCol);
+        block->setBaseCell(baseCell);
+        block->placeOnBoard(*this);  // Update the block's cells on the board
+        
+        originalRow++;  // Update the row position
+    }
+
+    // After the block has dropped to the lowest position, finalize the block's position
+    block->placeOnBoard(*this);  // Final placement on the board
 }
 
 bool Board::isRowFull(int row) {

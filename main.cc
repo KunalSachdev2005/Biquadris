@@ -8,11 +8,12 @@
 int main() {
     Board b;
     Direction d = Direction::Right;
-    Block* block = new IBlock(0, b.at(0,0));
+    Block* block = new IBlock(0, b.at(0,3));
     std::cout << block->getBaseCell()->getCol() << block->getBaseCell()->getRow() << std::endl;
     b.setCurrentBlock(block);
     b.moveBlock(d);
     std::cout << block->getBaseCell()->getCol() << block->getBaseCell()->getRow() << std::endl;
-    std::cout << b.getCurrentBlock()->getBaseCell()->getCol() << b.getCurrentBlock()->getBaseCell()->getRow();
+    b.dropBlock(block);
+    std::cout << block->getBaseCell()->getCol() << block->getBaseCell()->getRow() << std::endl;
     return 0;
 }

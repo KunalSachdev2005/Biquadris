@@ -107,7 +107,15 @@ void Block::rotate(Direction dir) {
     placeOnBoard(board);
 }
 
+const std::vector<std::vector<std::pair<int, int>>>& Block::getRotationShapes() const {
+    return rotations;
+}
+
 // Setter for heavy attribute
 void Block::setHeavy(bool heavy) {
     this->heavy = heavy;
+}
+
+int Block::getCurrentShapeIndex() const {
+    return currentShapeIndex;
 }

@@ -4,8 +4,8 @@ CXXFLAGS = -g -Wall -std=c++17
 
 # Targets
 TARGET = biquadris
-SOURCES = main.cc commandinterpreter.cc block.cc cell.cc board.cc iblock.cc
-HEADERS = commandinterpreter.h block.h cell.h board.h iblock.h
+SOURCES = main.cc commandinterpreter.cc block.cc cell.cc board.cc iblock.cc jblock.cc sblock.cc tblock.cc zblock.cc lblock.cc oblock.cc
+HEADERS = commandinterpreter.h block.h cell.h board.h iblock.h jblock.h sblock.h tblock.h zblock.h lblock.h oblock.h
 OBJECTS = $(SOURCES:.cc=.o)
 
 # Build the main executable
