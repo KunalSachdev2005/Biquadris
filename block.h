@@ -3,14 +3,13 @@
 
 #include <vector>
 #include <utility>
-
 #include "type.h"
 #include "direction.h"
 
-class Cell;
+class Cell; // Forward Declaration
 class Board;
 
-class Block {
+class Block { // Abstract Base Class
     protected:
         std::vector<Cell*> cells;                // Cells occupied by the block on the board
         Cell* baseCell;                          // The top-left cell where the block is placed on the board
@@ -38,7 +37,6 @@ class Block {
 
         // Set the base cell for the block (to update its position)
         void setBaseCell(Cell* base);
-
 
         // Place the block on the board
         void placeOnBoard(Board& board);

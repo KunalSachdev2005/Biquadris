@@ -13,4 +13,4 @@ public:
     void rotate(Direction dir) override;
 };
 
-#endif
+#endif // IBLOCK_H

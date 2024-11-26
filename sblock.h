@@ -2,6 +2,7 @@
 #define SBLOCK_H
 
 #include "block.h"
+#include "direction.h"
 
 class SBlock : public Block {
 public:
@@ -12,4 +13,4 @@ public:
     void rotate(Direction dir) override;
 };
 
-#endif
+#endif // SBLOCK_H

@@ -1,8 +1,11 @@
 #ifndef CELL_H
 #define CELL_H
 
-class Board;
-class Block;
+const int DEFAULT_ROW = 0;
+const int DEFAULT_COL = 0;
+
+class Board; // Forward Declaration
+class Block; // Forward Declaration
 
 class Cell {
 
@@ -14,7 +17,7 @@ private:
 
 public:
     // Constructor
-    Cell(int row=0, int col=0, Board* board = nullptr);
+    Cell(int row = DEFAULT_ROW, int col = DEFAULT_COL, Board* board = nullptr);
 
     // Accessor methods
     int getRow() const;
@@ -32,4 +35,4 @@ public:
     bool isOccupied() const;
 };
 
-#endif
+#endif // CELL_H

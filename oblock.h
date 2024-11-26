@@ -2,6 +2,7 @@
 #define OBLOCK_H
 
 #include "block.h"
+#include "direction.h"
 
 class OBlock : public Block {
 public:
@@ -12,4 +13,4 @@ public:
     void rotate(Direction dir) override;
 };
 
-#endif
+#endif // OBLOCK_H

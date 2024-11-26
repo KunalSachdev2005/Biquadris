@@ -2,6 +2,7 @@
 #define JBLOCK_H
 
 #include "block.h"
+#include "direction.h"
 
 class JBlock : public Block {
 public:
@@ -12,4 +13,4 @@ public:
     void rotate(Direction dir) override;
 };
 
-#endif
+#endif // JBLOCK_H

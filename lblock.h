@@ -2,6 +2,7 @@
 #define LBLOCK_H
 
 #include "block.h"
+#include "direction.h"
 
 class LBlock : public Block {
 public:
@@ -12,4 +13,4 @@ public:
     void rotate(Direction dir) override;
 };
 
-#endif
+#endif // LBLOCK_H

@@ -1,11 +1,13 @@
 #include "block.h"
-#include "cell.h"  
+#include "cell.h"
 #include "direction.h"
-#include "board.h"  
+#include "board.h"
+
+const int DEFAULT_WEIGHT = 0;
 
 // Constructor: Initializes block with base cell and shape offsets
 Block::Block(Type type, Cell* baseCell, const std::vector<std::pair<int, int>>& shape, int levelGenerated, bool heavy)
-    : type(type), baseCell(baseCell), shape(shape), levelGenerated(levelGenerated), heavy(heavy), weight(0) {
+    : type(type), baseCell(baseCell), shape(shape), levelGenerated(levelGenerated), heavy(heavy), weight(DEFAULT_WEIGHT) {
     // When the block is created, it is placed on the board automatically
     placeOnBoard(baseCell->getBoard());  // Assuming baseCell has a pointer to the board
 }
@@ -56,11 +58,11 @@ void Block::placeOnBoard(Board& board) {
 
     // Loop through each offset in the shape
     for (const auto& offset : shape) {
-        int r = baseCell->getCol() + offset.first;  // Calculate x position
-        int c = baseCell->getRow() + offset.second; // Calculate y position
+        int new_row = baseCell->getCol() + offset.first;  // Calculate x position
+        int new_col = baseCell->getRow() + offset.second; // Calculate y position
 
         // Get the corresponding cell from the board and add to the cells vector
-        Cell* cell = board.at(r, c); // Assuming Board has a method to return a cell by coordinates
+        Cell* cell = board.at(new_row, new_col);
         cells.push_back(cell);  // Add the cell to the block's cells vector
     }
 

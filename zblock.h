@@ -2,6 +2,7 @@
 #define ZBLOCK_H
 
 #include "block.h"
+#include "direction.h"
 
 class ZBlock : public Block {
 public:
@@ -12,4 +13,4 @@ public:
     void rotate(Direction dir) override;
 };
 
-#endif
+#endif // ZBLOCK_H

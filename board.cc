@@ -1,7 +1,6 @@
 #include "board.h"
 #include "cell.h"
 #include "block.h"
-
 #include <iostream>
 
 // Constructor: Initializes the board with a given number of rows and columns
@@ -27,12 +26,12 @@ Block* Board::getCurrentBlock() {
     return currentBlock;
 }
 
-void Board::setCurrentBlock(Block* block) {
-    currentBlock = block;
-}
-
 Block* Board::getNextBlock() {
     return nextBlock;
+}
+
+void Board::setCurrentBlock(Block* block) {
+    currentBlock = block;
 }
 
 void Board::setNextBlock(Block* block) {
