@@ -2,6 +2,8 @@
 #define LEVEL_H
 
 #include <memory>
+#include <cstdlib>
+#include <ctime>
 #include "cell.h"
 #include "block.h"
 #include "board.h"
@@ -13,8 +15,6 @@
 #include "sblock.h"
 #include "zblock.h"
 #include "tblock.h"
-#include <cstdlib>
-#include <ctime>
 
 class Level {
 protected:

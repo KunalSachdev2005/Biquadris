@@ -1,17 +1,4 @@
 #include "level1.h"
-#include "block.h"
-#include "player.h"
-#include "board.h"
-#include "cell.h"
-#include "iblock.h"
-#include "jblock.h"
-#include "lblock.h"
-#include "oblock.h"
-#include "sblock.h"
-#include "zblock.h"
-#include "tblock.h"
-#include <cstdlib>
-#include <ctime>
 
 // Constructor for Level1
 Level1::Level1(Player* player) : Level(1, player) {
