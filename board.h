@@ -44,6 +44,7 @@ public:
     //void queueSpecialAction(SpecialAction* action);
     //void applySpecialActions();
     Cell* at(int row, int col);  // Get the cell at (row, col)
+    void printTextDisplay();
 };
 
 #endif // BOARD_H

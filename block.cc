@@ -116,6 +116,11 @@ void Block::setHeavy(bool heavy) {
     this->heavy = heavy;
 }
 
+// Setter for weight attribute
+void Block::setWeight(int weight) {
+    this->weight = weight;
+}
+
 int Block::getCurrentShapeIndex() const {
     return currentShapeIndex;
 }

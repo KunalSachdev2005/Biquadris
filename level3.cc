@@ -36,6 +36,7 @@ Block* Level3::generateBlock() {
 
     // All blocks in Level 3 are heavy
     block->setHeavy(true); // need to implement the if possible part. read biquadris pdf for level 3
+    block->setWeight(1);
 
     return block;
 }

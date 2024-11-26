@@ -206,3 +206,43 @@ Cell* Board::at(int row, int col) {
     }
     return nullptr;  // Out of bounds
 }
+
+void Board::printTextDisplay() {
+    // Print from the top 21 rows of the grid
+    for (int r = 0; r < rows; ++r) {
+        for (int c = 0; c < cols; ++c) {
+            // If the cell is occupied by a block, print its block type letter
+            if (grid[r][c].isOccupied()) {
+                Type blockType = grid[r][c].getBlock()->getType();
+                switch (blockType) {
+                    case Type::I:
+                        std::cout << 'I';
+                        break;
+                    case Type::J:
+                        std::cout << 'J';
+                        break;
+                    case Type::L:
+                        std::cout << 'L';
+                        break;
+                    case Type::O:
+                        std::cout << 'O';
+                        break;
+                    case Type::S:
+                        std::cout << 'S';
+                        break;
+                    case Type::T:
+                        std::cout << 'T';
+                        break;
+                    case Type::Z:
+                        std::cout << 'Z';
+                        break;
+                }
+            } else {
+                // Print a space for empty cells
+                std::cout << ' ';
+            }
+        }
+        // Move to the next line after each row
+        std::cout << std::endl;
+    }
+}

@@ -57,6 +57,9 @@ class Block { // Abstract Base Class
 
         // Setter for heavy attribute
         void setHeavy(bool heavy);
+
+        // Setter for weight attribute
+        void setWeight(int weight);
 };
 
 #endif // BLOCK_H
