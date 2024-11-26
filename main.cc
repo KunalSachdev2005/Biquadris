@@ -4,16 +4,21 @@
 #include "block.h"
 #include "cell.h"
 #include "iblock.h"
+#include "jblock.h"
+#include "oblock.h"
 
 int main() {
     Board b;
     Direction d = Direction::Right;
-    Block* block = new IBlock(0, b.at(0,3));
-    std::cout << block->getBaseCell()->getCol() << block->getBaseCell()->getRow() << std::endl;
+    Block* block = new OBlock(0, b.at(0,3));
+    b.printTextDisplay();
+    b.moveBlock(block, Direction::Down);
+    b.moveBlock(block, Direction::Down);
+    b.moveBlock(block, Direction::Down);
+    b.moveBlock(block, Direction::Down);
+    b.printTextDisplay();
     b.setCurrentBlock(block);
-    b.moveBlock(d);
-    std::cout << block->getBaseCell()->getCol() << block->getBaseCell()->getRow() << std::endl;
-    b.dropBlock(block);
-    std::cout << block->getBaseCell()->getCol() << block->getBaseCell()->getRow() << std::endl;
+    b.rotateBlock(Direction::Clockwise);
+    b.printTextDisplay();
     return 0;
 }

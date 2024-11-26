@@ -121,29 +121,41 @@ bool Board::canRotate(Block* block, Direction dir) {
 }
 
 
-void Board::moveBlock(Direction dir) {
-    if (!canMove(currentBlock, dir)) {
+void Board::moveBlock(Block* block, Direction dir) {
+    if (!canMove(block, dir)) {
         return; // If it can't move, exit the function
     }
 
+    // Clear the current cells occupied by the block
+    const std::vector<std::pair<int, int>>& shape = block->getShape();
+    Cell* baseCell = block->getBaseCell();
+    for (const auto& offset : shape) {
+        int row = baseCell->getRow() + offset.first;
+        int col = baseCell->getCol() + offset.second;
+        Cell* cell = at(row, col);
+        if (cell) {
+            cell->setBlock(nullptr);  // Clear the block from the cell
+        }
+    }
+
     // Get the current position of the base cell
-    int originalRow = currentBlock->getBaseCell()->getRow();
-    int originalCol = currentBlock->getBaseCell()->getCol();
+    int originalRow = block->getBaseCell()->getRow();
+    int originalCol = block->getBaseCell()->getCol();
 
     switch (dir) {
         case Direction::Right:
-            currentBlock->setBaseCell(at(originalRow, originalCol + 1)); // Right shift
+            block->setBaseCell(at(originalRow, originalCol + 1)); // Right shift
             break;
         case Direction::Left:
-            currentBlock->setBaseCell(at(originalRow, originalCol - 1)); // Left shift
+            block->setBaseCell(at(originalRow, originalCol - 1)); // Left shift
             break;
         default:
-            currentBlock->setBaseCell(at(originalRow + 1, originalCol));
+            block->setBaseCell(at(originalRow + 1, originalCol));
             break;
     }
 
     // After shifting, update the block's position on the board
-    currentBlock->placeOnBoard(*this);
+    block->placeOnBoard(*this);
 }
 
 void Board::rotateBlock(Direction dir) {
@@ -159,14 +171,19 @@ void Board::dropBlock(Block* block) {
     int originalRow = baseCell->getRow();
     int originalCol = baseCell->getCol();
     
+    const std::vector<std::pair<int, int>>& shape = block->getShape();
+    for (const auto& offset : shape) {
+        int row = originalRow + offset.first;
+        int col = originalCol + offset.second;
+        Cell* cell = at(row, col);
+        if (cell) {
+            cell->setBlock(nullptr);  // Clear the block from the cell
+        }
+    }
     // Try to move the block down as far as possible
     while (canMove(block, Direction::Down)) {
         // Move the block down one cell
-        baseCell = at(originalRow + 1, originalCol);
-        block->setBaseCell(baseCell);
-        block->placeOnBoard(*this);  // Update the block's cells on the board
-        
-        originalRow++;  // Update the row position
+        moveBlock(block, Direction::Down);
     }
 
     // After the block has dropped to the lowest position, finalize the block's position
@@ -208,8 +225,29 @@ Cell* Board::at(int row, int col) {
 }
 
 void Board::printTextDisplay() {
-    // Print from the top 21 rows of the grid
+    // Print top border
+    std::cout << "   ";  // Extra space for row numbers
+    std::cout << "+";
+    for (int c = 0; c < cols; ++c) {
+        std::cout << "-";  // Horizontal border
+    }
+    std::cout << "+" << std::endl;
+
+    // Print column numbers at the top
+    std::cout << "   ";  // Space for row number
+    for (int c = 0; c < cols; ++c) {
+        std::cout << c % 10;  // Print column number (0-9)
+    }
+    std::cout << std::endl;
+
+    // Print each row with side borders and row numbers
     for (int r = 0; r < rows; ++r) {
+        // Print the row number at the beginning of each row
+        std::cout << r % 10 << " ";  // Row number (0-9) or you could expand this for two-digit rows if needed
+
+        std::cout << "|";  // Left border
+
+        // Print each column in the row
         for (int c = 0; c < cols; ++c) {
             // If the cell is occupied by a block, print its block type letter
             if (grid[r][c].isOccupied()) {
@@ -242,7 +280,17 @@ void Board::printTextDisplay() {
                 std::cout << ' ';
             }
         }
-        // Move to the next line after each row
+
+        std::cout << "|";  // Right border
         std::cout << std::endl;
     }
+
+    // Print bottom border
+    std::cout << "   ";  // Space for row number
+    std::cout << "+";
+    for (int c = 0; c < cols; ++c) {
+        std::cout << "-";  // Horizontal border
+    }
+    std::cout << "+" << std::endl;
 }
+
