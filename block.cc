@@ -7,7 +7,7 @@ const int DEFAULT_WEIGHT = 0;
 
 // Constructor: Initializes block with base cell and shape offsets
 Block::Block(Type type, Cell* baseCell, const std::vector<std::pair<int, int>>& shape, int levelGenerated, bool heavy)
-    : type(type), baseCell(baseCell), shape(shape), levelGenerated(levelGenerated), heavy(heavy), weight(DEFAULT_WEIGHT) {
+    : type(type), baseCell(baseCell), shape(shape), levelGenerated(levelGenerated), heavy(heavy), weight(DEFAULT_WEIGHT), currentShapeIndex(0) {
     // When the block is created, it is placed on the board automatically
     placeOnBoard(baseCell->getBoard());  // Assuming baseCell has a pointer to the board
 }
@@ -77,3 +77,32 @@ void Block::updateCells() {
     }
 }
 
+void Block::initializeRotations(const std::vector<std::vector<std::pair<int, int>>>& rotations) {
+    this->rotations = rotations;
+}
+
+void Block::rotate(Direction dir) {
+    if (rotations.empty()) return;  // No rotations defined, do nothing
+
+    // Track the old cells and clear them
+    Board& board = baseCell->getBoard();
+    std::vector<Cell*> oldCells = cells;
+    for (Cell* cell : oldCells) {
+        if (cell) {
+            cell->setBlock(nullptr);  // Clear the block from previously occupied cells
+        }
+    }
+
+    // Update the shape index
+    if (dir == Direction::Clockwise) {
+        currentShapeIndex = (currentShapeIndex + 1) % rotations.size();
+    } else if (dir == Direction::CounterClockwise) {
+        currentShapeIndex = (currentShapeIndex - 1 + rotations.size()) % rotations.size();
+    }
+
+    // Apply the new shape
+    shape = rotations[currentShapeIndex];
+
+    // Reposition the block on the board
+    placeOnBoard(board);
+}

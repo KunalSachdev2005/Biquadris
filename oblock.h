@@ -8,9 +8,6 @@ class OBlock : public Block {
 public:
     // Constructor
     OBlock(int levelGenerated, Cell* baseCell);
-
-    // Override rotation method
-    void rotate(Direction dir) override;
 };
 
 #endif // OBLOCK_H

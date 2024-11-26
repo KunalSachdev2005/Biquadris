@@ -8,9 +8,6 @@ class IBlock : public Block {
 public:
     // Constructor
     IBlock(int levelGenerated, Cell* baseCell);
-
-    // Override rotation method
-    void rotate(Direction dir) override;
 };
 
 #endif // IBLOCK_H

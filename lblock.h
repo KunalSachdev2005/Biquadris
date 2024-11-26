@@ -8,9 +8,6 @@ class LBlock : public Block {
 public:
     // Constructor
     LBlock(int levelGenerated, Cell* baseCell);
-
-    // Override rotation method
-    void rotate(Direction dir) override;
 };
 
 #endif // LBLOCK_H

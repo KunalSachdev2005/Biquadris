@@ -19,6 +19,9 @@ class Block { // Abstract Base Class
         int weight;                              // Weight for block fall behavior
         int levelGenerated;                      // The level at which the block was generated
 
+        std::vector<std::vector<std::pair<int, int>>> rotations;
+        int currentShapeIndex;
+
     public:
         // Constructor that initializes the block at a given base cell on the board
         Block(Type type, Cell* baseCell, const std::vector<std::pair<int, int>>& shape, int levelGenerated, bool heavy = false);
@@ -44,8 +47,10 @@ class Block { // Abstract Base Class
         // Update the cells occupied by the block, linking them to this block
         void updateCells();
 
+        void initializeRotations(const std::vector<std::vector<std::pair<int, int>>>& rotations); // Initialize rotations
+
         // Rotate the block (using Direction)
-        virtual void rotate(Direction direction) = 0;
+        void rotate(Direction direction);
 };
 
 #endif // BLOCK_H

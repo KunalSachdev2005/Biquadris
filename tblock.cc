@@ -4,11 +4,13 @@
 
 // Constructor: Initializes the TBlock at a given level and base cell
 TBlock::TBlock(int levelGenerated, Cell* baseCell)
-    : Block(Type::T, baseCell, {{0, 0}, {1, 0}, {2, 1}, {1, 1}}, levelGenerated) {
+    : Block(Type::T, baseCell, {{1, 0}, {1, 1}, {1, 2}, {0, 1}}, levelGenerated) {
     // Here, the block's shape is defined relative to the base cell.
+    initializeRotations({
+        {{1, 0}, {1, 1}, {1, 2}, {0, 1}},  // Default (horizontal)
+        {{0, 1}, {1, 1}, {2, 1}, {1, 0}},  // 90 degrees clockwise
+        {{1, 0}, {1, 1}, {1, 2}, {2, 1}},  // 180 degrees clockwise
+        {{0, 1}, {1, 1}, {2, 1}, {1, 2}}   // 270 degrees clockwise
+    });
 }
 
-// Override the rotate method for TBlock
-void TBlock::rotate(Direction dir) {
-    
-}
