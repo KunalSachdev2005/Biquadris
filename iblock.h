@@ -2,6 +2,7 @@
 #define IBLOCK_H
 
 #include "block.h"
+#include "direction.h"
 
 class IBlock : public Block {
 public:

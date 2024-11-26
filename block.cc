@@ -1,10 +1,13 @@
-#include "Block.h"
+#include "block.h"
+#include "cell.h"  
+#include "direction.h"
+#include "board.h"  
 
 // Constructor: Initializes block with base cell and shape offsets
 Block::Block(Type type, Cell* baseCell, const std::vector<std::pair<int, int>>& shape, int levelGenerated, bool heavy)
     : type(type), baseCell(baseCell), shape(shape), levelGenerated(levelGenerated), heavy(heavy), weight(0) {
     // When the block is created, it is placed on the board automatically
-    placeOnBoard(*baseCell->getBoard());  // Assuming baseCell has a pointer to the board
+    placeOnBoard(baseCell->getBoard());  // Assuming baseCell has a pointer to the board
 }
 
 // Destructor: No dynamic memory to free because we're not creating new cells
@@ -33,6 +36,10 @@ const std::vector<Cell*>& Block::getCells() const {
     return cells;
 }
 
+Cell* Block::getBaseCell() const {
+    return baseCell;
+}
+
 const std::vector<std::pair<int, int>>& Block::getShape() const {
     return shape;
 }
@@ -40,7 +47,7 @@ const std::vector<std::pair<int, int>>& Block::getShape() const {
 // Set base cell
 void Block::setBaseCell(Cell* base) {
     baseCell = base;
-    placeOnBoard(*base->getBoard());  // Recalculate block's position when base is set
+    placeOnBoard(base->getBoard());  // Recalculate block's position when base is set
 }
 
 // Place the block on the board based on the base cell and shape offsets

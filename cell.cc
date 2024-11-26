@@ -1,8 +1,10 @@
 #include "cell.h"
 #include "block.h"
+#include "board.h"
+
 
 // Constructor
-Cell::Cell(int row, int col) : row(row), col(col), block(nullptr) {}
+Cell::Cell(int row, int col, Board* board) : row(row), col(col), block(nullptr), board(board) {}
 
 // Accessor methods
 int Cell::getRow() const {

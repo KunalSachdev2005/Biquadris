@@ -1,19 +1,20 @@
 #ifndef CELL_H
 #define CELL_H
 
-class Block; // forward declaration
+class Board;
+class Block;
 
 class Cell {
 
 private:
     int row;
     int col;
-    Block * block;
+    Block* block;
     Board* board;
 
 public:
     // Constructor
-    Cell(int row, int col);
+    Cell(int row=0, int col=0, Board* board = nullptr);
 
     // Accessor methods
     int getRow() const;
