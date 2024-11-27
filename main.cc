@@ -23,6 +23,15 @@ int main() {
     b->setNextBlock(block);
     b->printTextDisplay();
     b->setCurrentBlock(b->getNextBlock());
+    b->setNextBlock(p->generateNextBlock());
+    b->printTextDisplay();
+    b->moveBlock(b->getCurrentBlock(), Direction::Right);
+    b->moveBlock(b->getCurrentBlock(), Direction::Right);
+    b->moveBlock(b->getCurrentBlock(), Direction::Right);
+    b->moveBlock(b->getCurrentBlock(), Direction::Down);
+    b->printTextDisplay();
+    b->setCurrentBlock(b->getNextBlock());
+    b->setNextBlock(p->generateNextBlock());
     b->printTextDisplay();
     return 0;
 }
