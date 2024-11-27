@@ -29,6 +29,8 @@ public:
     Board();
     // Accessor methods
     std::vector<std::vector<Cell>>& getGrid();
+    int getRows();
+    int getCols();
     Block* getCurrentBlock();
     void setCurrentBlock(Block* block);
     Block* getNextBlock();
@@ -40,7 +42,7 @@ public:
     void rotateBlock(Block* block, Direction dir);
     void dropBlock(Block* block);
     bool isRowFull(int row);
-    void clearRow(int row);
+    int clearRow(int row);
     //void queueSpecialAction(SpecialAction* action);
     //void applySpecialActions();
     Cell* at(int row, int col);  // Get the cell at (row, col)

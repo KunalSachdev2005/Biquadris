@@ -2,6 +2,7 @@
 #include "cell.h"
 #include "block.h"
 #include <iostream>
+#include <set>
 
 // Constructor: Initializes the board with a given number of rows and columns
 Board::Board()
@@ -201,21 +202,65 @@ bool Board::isRowFull(int row) {
     return true;
 }
 
-void Board::clearRow(int row) {
-    // Clear the full row by removing blocks and shifting down
+int Board::clearRow(int row) {
+    int removedBlocksLevelSum = 0;  // Counter for the sum of levels of removed blocks
+    std::set<Block*> affectedBlocks;  // Track blocks affected by the row clearing
+
     for (int col = 0; col < cols; ++col) {
-        grid[row][col].setBlock(nullptr);  // Remove the block from the cell
+        Block* block = grid[row][col].getBlock();
+        if (block) {
+            affectedBlocks.insert(block);  // Track affected blocks
+        }
+        grid[row][col].setBlock(nullptr);  // Clear the cell
     }
 
-    // Shift the rows above down
-    for (int r = row - 1; r >= 0; --r) {
-        for (int c = 0; c < cols; ++c) {
-            grid[r + 1][c] = grid[r][c];  // Shift down
-            grid[r][c].setBlock(nullptr);  // Clear current cell
+    for (Block* block : affectedBlocks) {
+        // Update block's shape to remove cleared offsets
+        std::vector<std::pair<int, int>> newShape;
+        const auto& oldShape = block->getShape();
+        for (const auto& offset : oldShape) {
+            int unitRow = block->getBaseCell()->getRow() - offset.first;
+            if (unitRow != row) {
+                // Keep the offset if the unit isn't in the cleared row
+                newShape.push_back(offset);
+            }
+        }
+        if (newShape.empty()) {
+            removedBlocksLevelSum += block->getLevelGenerated();
+        // Clear all cells referencing this block
+            for (Cell* cell : block->getCells()) {
+                if (cell) {
+                    cell->setBlock(nullptr);
+                }   
+            }
+            delete block;  // Free memory for the removed block
+        } else {
+            // Update block's shape and reapply to the board
+            block->clearOldCells();
+            block->setShape(newShape);  // Update the shape with the new offsets
         }
     }
-    rowsCleared++;
+
+    for (int r = row - 1; r >= 0; --r) {
+        for (int c = 0; c < cols; ++c) {
+            Cell& aboveCell = grid[r][c];
+            Cell& belowCell = grid[r + 1][c];
+            Block* block = aboveCell.getBlock();
+
+            belowCell.setBlock(block);  // Move block reference down
+            if (block) {
+                block->clearOldCells();
+                block->setBaseCell(&belowCell);  // Update base cell
+            }
+
+            aboveCell.setBlock(nullptr);  // Clear the above cell
+        }
+    }
+
+    rowsCleared++;  // Increment the cleared rows counter
+    return removedBlocksLevelSum;  // Return the total levels of removed blocks
 }
+
 
 Cell* Board::at(int row, int col) {
     // Return the cell at (row, col)
@@ -225,73 +270,6 @@ Cell* Board::at(int row, int col) {
     return nullptr;  // Out of bounds
 }
 
-void Board::printTextDisplay() {
-    // Print top border
-    std::cout << "   ";  // Extra space for row numbers
-    std::cout << "+";
-    for (int c = 0; c < cols; ++c) {
-        std::cout << "-";  // Horizontal border
-    }
-    std::cout << "+" << std::endl;
+int Board::getRows() { return rows; }
 
-    // Print column numbers at the top
-    std::cout << "   ";  // Space for row number
-    for (int c = 0; c < cols; ++c) {
-        std::cout << c % 10;  // Print column number (0-9)
-    }
-    std::cout << std::endl;
-
-    // Print each row with side borders and row numbers
-    for (int r = 0; r < rows; ++r) {
-        // Print the row number at the beginning of each row
-        std::cout << r % 10 << " ";  // Row number (0-9) or you could expand this for two-digit rows if needed
-
-        std::cout << "|";  // Left border
-
-        // Print each column in the row
-        for (int c = 0; c < cols; ++c) {
-            // If the cell is occupied by a block, print its block type letter
-            if (grid[r][c].isOccupied()) {
-                Type blockType = grid[r][c].getBlock()->getType();
-                switch (blockType) {
-                    case Type::I:
-                        std::cout << 'I';
-                        break;
-                    case Type::J:
-                        std::cout << 'J';
-                        break;
-                    case Type::L:
-                        std::cout << 'L';
-                        break;
-                    case Type::O:
-                        std::cout << 'O';
-                        break;
-                    case Type::S:
-                        std::cout << 'S';
-                        break;
-                    case Type::T:
-                        std::cout << 'T';
-                        break;
-                    case Type::Z:
-                        std::cout << 'Z';
-                        break;
-                }
-            } else {
-                // Print a space for empty cells
-                std::cout << ' ';
-            }
-        }
-
-        std::cout << "|";  // Right border
-        std::cout << std::endl;
-    }
-
-    // Print bottom border
-    std::cout << "   ";  // Space for row number
-    std::cout << "+";
-    for (int c = 0; c < cols; ++c) {
-        std::cout << "-";  // Horizontal border
-    }
-    std::cout << "+" << std::endl;
-}
-
+int Board::getCols() { return cols; }

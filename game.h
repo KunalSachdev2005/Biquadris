@@ -4,6 +4,11 @@
 #include "player.h"
 #include "commandinterpreter.h"  // Assuming you'll create this
 #include "textdisplay.h"  // Assuming you'll create this
+#include "level0.h"
+#include "level1.h"
+#include "level2.h"
+#include "level3.h"
+#include "level4.h"
 
 class Game {
 private:
@@ -39,6 +44,9 @@ public:
     void updateDisplay();
     void showScores();
     void printInstructions();
+
+    void levelUp(Player* player);
+    void levelDown(Player* player);
 };
 
 #endif // GAME_H

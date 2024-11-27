@@ -55,6 +55,19 @@ void Block::clearOldCells() {
     cells.clear();  // Reset the cells vector
 }
 
+void Block::setShape(const std::vector<std::pair<int, int>>& newShape) {
+    // Clear old cells associated with the block
+    clearOldCells();
+
+    // Update the shape
+    shape = newShape;
+
+    // If the shape is not empty, reapply the block on the board
+    if (!shape.empty() && baseCell) {
+        placeOnBoard(baseCell->getBoard());
+    }
+}
+
 // Set base cell
 void Block::setBaseCell(Cell* base) {
     clearOldCells();
@@ -71,9 +84,11 @@ void Block::placeOnBoard(Board& board) {
         int new_row = baseCell->getRow() - offset.first;  
         int new_col = baseCell->getCol() + offset.second; 
 
-        // Get the corresponding cell from the board and add to the cells vector
-        Cell* cell = board.at(new_row, new_col);
-        cells.push_back(cell);  // Add the cell to the block's cells vector
+        // Ensure the new position is within bounds
+        if (new_row >= 0 && new_row < board.getRows() && new_col >= 0 && new_col < board.getCols()) {
+            Cell* cell = board.at(new_row, new_col);
+            cells.push_back(cell);
+        } 
     }
 
     // After placing the block on the board, update all its cells

@@ -6,6 +6,8 @@
 #include <vector>
 #include "level.h"
 
+class Player;
+
 class Level0 : public Level {
 private:
     std::vector<std::string> blockSequence; // Sequence of block types

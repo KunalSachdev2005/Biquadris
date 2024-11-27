@@ -39,6 +39,7 @@ class Block { // Abstract Base Class
         Cell* getBaseCell() const;
         const std::vector<Cell*>& getCells() const;
         const std::vector<std::pair<int, int>>& getShape() const;
+        void setShape(const std::vector<std::pair<int, int>>& newShape);
 
         // Set the base cell for the block (to update its position)
         void setBaseCell(Cell* base);
