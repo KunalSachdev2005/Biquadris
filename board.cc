@@ -31,6 +31,18 @@ Block* Board::getNextBlock() {
 }
 
 void Board::setCurrentBlock(Block* block) {
+    if (block) {
+    // Clear the cells previously occupied by the block
+    for (const auto& offset : block->getShape()) {
+        int row = block->getBaseCell()->getRow() - offset.first;
+        int col = block->getBaseCell()->getCol() + offset.second;
+
+        Cell* cell = at(row, col);
+        if (cell) {
+            cell->setBlock(nullptr);
+            }   
+        }
+    }
     currentBlock = block;
     currentBlock->setBaseCell(at(5,0));
 }
@@ -63,7 +75,7 @@ bool Board::canMove(Block* block, Direction dir) {
         }
 
         // Check if the new position is out of bounds
-        if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols) {
+        if (newRow < 0 || newRow >= rows-3 || newCol < 0 || newCol >= cols) {
             return false;  // The move is out of bounds
         }
 
@@ -102,7 +114,7 @@ bool Board::canRotate(Block* block, Direction dir) {
         int newCol = baseCell->getCol() + offset.second;
 
         // Check if the new position is within bounds
-        if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols) {
+        if (newRow < 0 || newRow >= rows-3 || newCol < 0 || newCol >= cols) {
             return false;  // Out of bounds
         }
 
@@ -176,6 +188,7 @@ void Board::dropBlock(Block* block) {
 
     // After the block has dropped to the lowest position, finalize the block's position
     block->placeOnBoard(*this);  // Final placement on the board
+    currentBlock = nullptr;
 }
 
 bool Board::isRowFull(int row) {

@@ -26,7 +26,7 @@ protected:
 public:
     Level(int levelNumber, Player* player); // Constructor
     virtual ~Level(); // Virtual destructor
-
+    int getLevel();
     virtual Block* generateBlock() = 0; // Pure virtual function for generating a block
 };
 

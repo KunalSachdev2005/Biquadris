@@ -1,37 +1,28 @@
 #include <iostream>
-#include "CommandInterpreter.h"
-#include "board.h"
-#include "block.h"
-#include "cell.h"
-#include "iblock.h"
-#include "jblock.h"
-#include "sblock.h"
-#include "tblock.h"
-#include "oblock.h"
-#include "lblock.h"
-#include "zblock.h"
-#include "player.h"
-#include "level.h"
-#include "level2.h"
+#include "game.h"
 
 int main() {
-    Player* p = new Player();
-    Board* b = p->getBoard();
-    Level* l = new Level2(p);
-    p->setLevel(l);
-    Block* block = p->generateNextBlock();
-    b->setNextBlock(block);
-    b->printTextDisplay();
-    b->setCurrentBlock(b->getNextBlock());
-    b->setNextBlock(p->generateNextBlock());
-    b->printTextDisplay();
-    b->moveBlock(b->getCurrentBlock(), Direction::Right);
-    b->moveBlock(b->getCurrentBlock(), Direction::Right);
-    b->moveBlock(b->getCurrentBlock(), Direction::Right);
-    b->moveBlock(b->getCurrentBlock(), Direction::Down);
-    b->printTextDisplay();
-    b->setCurrentBlock(b->getNextBlock());
-    b->setNextBlock(p->generateNextBlock());
-    b->printTextDisplay();
-    return 0;
+    try {
+        std::cout << "Welcome to the Game!\n";
+
+        // Get player names
+        std::string player1Name, player2Name;
+        std::cout << "Enter Player 1 name: ";
+        std::getline(std::cin, player1Name);
+        std::cout << "Enter Player 2 name: ";
+        std::getline(std::cin, player2Name);
+
+        // Create the game object
+        Game game(player1Name, player2Name);
+
+        // Start the game
+        game.start();
+
+        std::cout << "Thanks for playing!\n";
+    } catch (const std::exception& e) {
+        std::cerr << "An unexpected error occurred: " << e.what() << "\n";
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }

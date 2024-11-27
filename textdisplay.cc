@@ -1,18 +1,100 @@
 #include "textdisplay.h"
+#include "game.h"
 #include <iostream>
 #include <iomanip>
 
-// Constructor
-TextDisplay::TextDisplay() : 
-    board1Display(15, std::vector<char>(11, ' ')), 
-    board2Display(15, std::vector<char>(11, ' ')),
-    player1Level(0), 
-    player2Level(0),
-    player1NextBlock(""),
-    player2NextBlock("") {}
+TextDisplay::TextDisplay(Game* game) : game(game) {}
 
-char TextDisplay::getBlockChar(Type blockType) {
-    switch (blockType) {
+void TextDisplay::update() {
+    Player* player1 = game->getPlayer1();
+    Player* player2 = game->getPlayer2();
+
+    // Print scores and levels
+    std::cout << "Level:    " 
+              << std::setw(5) << player1->getLevel()->getLevel() 
+              << std::setw(15) << player2->getLevel()->getLevel() << std::endl;
+    
+    std::cout << "Score:    " 
+              << std::setw(5) << player1->getScore().getScore() 
+              << std::setw(15) << player2->getScore().getScore() << std::endl;
+    
+    std::cout << "Hi Score: " 
+              << std::setw(5) << player1->getHighScore().getScore() 
+              << std::setw(15) << player2->getHighScore().getScore() << std::endl;
+
+    // Print boards side by side (first 18 rows)
+    printSideBySideBoards(player1, player2);
+
+    // Separator for next block
+    std::cout << std::string(44, '-') << std::endl;
+
+    // Print next blocks 
+    printNextBlocks(player1, player2);
+}
+
+void TextDisplay::printSideBySideBoards(Player* player1, Player* player2) {
+    std::cout << "+----------+" << std::string(10, ' ') << "+----------+" << std::endl;
+
+    for (int r = 0; r < 18; ++r) {
+        // Player 1 board rendering
+        std::cout << "|";
+        for (int c = 0; c < 11; ++c) {
+            Cell* cell = player1->getBoard()->at(r, c);
+            printCell(cell);
+        }
+        std::cout << "|";
+
+        // Space between boards
+        std::cout << std::string(10, ' ');
+
+        // Player 2 board rendering
+        std::cout << "|";
+        for (int c = 0; c < 11; ++c) {
+            Cell* cell = player2->getBoard()->at(r, c);
+            printCell(cell);
+        }
+        std::cout << "|" << std::endl;
+    }
+
+    std::cout << "+----------+" << std::string(10, ' ') << "+----------+" << std::endl;
+}
+
+void TextDisplay::printCell(Cell* cell) {
+    if (!cell || !cell->isOccupied()) {
+        std::cout << " ";
+    } else {
+        Block* block = cell->getBlock();
+        char ch = getBlockTypeChar(block);
+        std::cout << ch;
+    } 
+}
+
+void TextDisplay::printNextBlocks(Player* player1, Player* player2) {
+    for (int r = 18; r < 21; ++r) {
+        // Player 1 board rendering
+        std::cout << "|";
+        for (int c = 0; c < 11; ++c) {
+            Cell* cell = player1->getBoard()->at(r, c);
+            printCell(cell);
+        }
+        std::cout << "|";
+
+        // Space between boards
+        std::cout << std::string(10, ' ');
+
+        // Player 2 board rendering
+        std::cout << "|";
+        for (int c = 0; c < 11; ++c) {
+            Cell* cell = player2->getBoard()->at(r, c);
+            printCell(cell);
+        }
+        std::cout << "|" << std::endl;
+    }
+}
+
+char TextDisplay::getBlockTypeChar(Block* block) {
+    if (!block) return ' ';
+    switch(block->getType()) {
         case Type::I: return 'I';
         case Type::J: return 'J';
         case Type::L: return 'L';
@@ -22,130 +104,4 @@ char TextDisplay::getBlockChar(Type blockType) {
         case Type::Z: return 'Z';
         default: return ' ';
     }
-}
-
-void TextDisplay::renderBoard(const Board* board, std::vector<std::vector<char>>& boardDisplay) {
-    // Reset the board display
-    for (auto& row : boardDisplay) {
-        std::fill(row.begin(), row.end(), ' ');
-    }
-
-    // Render the board state
-    auto& grid = board->getGrid();
-    for (size_t r = 3; r < grid.size(); ++r) {  // Skip the first 3 reserve rows
-        for (size_t c = 0; c < grid[r].size(); ++c) {
-            if (grid[r][c].isOccupied()) {
-                // Map row and column to boardDisplay, adjusting for reserve rows
-                boardDisplay[r - 3][c] = getBlockChar(grid[r][c].getBlock()->getType());
-            }
-        }
-    }
-}
-
-void TextDisplay::renderNextBlock(Block* nextBlock, std::string& nextBlockDisplay) {
-    if (!nextBlock) {
-        nextBlockDisplay = "";
-        return;
-    }
-
-    nextBlockDisplay = "";
-    auto shape = nextBlock->getShape();
-    Type blockType = nextBlock->getType();
-    char blockChar = getBlockChar(blockType);
-
-    // Create a simple representation of the next block
-    for (const auto& offset : shape) {
-        if (offset.first == 0) {  // Only show horizontal representation
-            nextBlockDisplay += blockChar;
-        }
-    }
-}
-
-void TextDisplay::clear() {
-    // Reset all display elements
-    board1Display = std::vector<std::vector<char>>(15, std::vector<char>(11, ' '));
-    board2Display = std::vector<std::vector<char>>(15, std::vector<char>(11, ' '));
-    player1NextBlock = "";
-    player2NextBlock = "";
-}
-
-void TextDisplay::drawBoards(Board* player1Board, Board* player2Board) {
-    // Render boards
-    renderBoard(player1Board, board1Display);
-    renderBoard(player2Board, board2Display);
-
-    // Render next blocks
-    renderNextBlock(player1Board->getNextBlock(), player1NextBlock);
-    renderNextBlock(player2Board->getNextBlock(), player2NextBlock);
-
-    // Set current levels and scores
-    player1Level = player1Board->getCurrentLevel();
-    player2Level = player2Board->getCurrentLevel();
-}
-
-void TextDisplay::drawScores(Score& player1Score, Score& player2Score) {
-    this->player1Score = player1Score;
-    this->player2Score = player2Score;
-}
-
-void TextDisplay::render() {
-    // Clear the screen (platform-dependent)
-    #ifdef _WIN32
-        system("cls");
-    #else
-        system("clear");
-    #endif
-
-    // Display game state for both players
-    std::cout << "Level: " << std::setw(2) << player1Level 
-              << std::setw(20) << "Level: " << std::setw(2) << player2Level << std::endl;
-    
-    std::cout << "Score: " << std::setw(2) << player1Score.getScore() 
-              << std::setw(20) << "Score: " << std::setw(2) << player2Score.getScore() << std::endl;
-
-    // Draw horizontal separators
-    std::cout << "-----------" << std::setw(20) << "-----------" << std::endl;
-
-    // Render boards side by side
-    for (size_t r = 0; r < board1Display.size(); ++r) {
-        // Player 1 board row
-        for (char cell : board1Display[r]) {
-            std::cout << (cell == ' ' ? ' ' : cell);
-        }
-        
-        // Spacing between boards
-        std::cout << std::setw(10);
-
-        // Player 2 board row
-        for (char cell : board2Display[r]) {
-            std::cout << (cell == ' ' ? ' ' : cell);
-        }
-        std::cout << std::endl;
-    }
-
-    // Draw horizontal separators again
-    std::cout << "-----------" << std::setw(20) << "-----------" << std::endl;
-
-    // Next block previews
-    std::cout << "Next:" << std::setw(20) << "Next:" << std::endl;
-    std::cout << player1NextBlock << std::setw(20) << player2NextBlock << std::endl;
-}
-
-void TextDisplay::showFinalScores(Score& player1Score, Score& player2Score) {
-    std::cout << "Final Scores:" << std::endl;
-    std::cout << "Player 1: " << player1Score.getScore() << std::endl;
-    std::cout << "Player 2: " << player2Score.getScore() << std::endl;
-}
-
-void TextDisplay::showInstructions() {
-    std::cout << "Biquadris Game Instructions:" << std::endl;
-    std::cout << "Commands:" << std::endl;
-    std::cout << "- left: Move block left" << std::endl;
-    std::cout << "- right: Move block right" << std::endl;
-    std::cout << "- down: Move block down" << std::endl;
-    std::cout << "- clockwise: Rotate block clockwise" << std::endl;
-    std::cout << "- counterclockwise: Rotate block counterclockwise" << std::endl;
-    std::cout << "- drop: Drop the current block" << std::endl;
-    std::cout << "- levelup: Increase difficulty level" << std::endl;
-    std::cout << "- leveldown: Decrease difficulty level" << std::endl;
 }

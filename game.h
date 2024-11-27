@@ -31,6 +31,8 @@ public:
     // Getters
     Player* getCurrentPlayer();
     Player* getOpponentPlayer();
+    Player* getPlayer1();
+    Player* getPlayer2();
     bool isGameOver() const;
     
     // Display methods
