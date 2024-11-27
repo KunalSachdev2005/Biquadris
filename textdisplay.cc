@@ -26,14 +26,14 @@ void TextDisplay::update() {
     printSideBySideBoards(player1, player2);
 
     // Separator for next block
-    std::cout << std::string(44, '-') << std::endl;
+    std::cout << std::string(36, '-') << std::endl;
 
     // Print next blocks 
     printNextBlocks(player1, player2);
 }
 
 void TextDisplay::printSideBySideBoards(Player* player1, Player* player2) {
-    std::cout << "+----------+" << std::string(10, ' ') << "+----------+" << std::endl;
+    std::cout << "+-----------+" << std::string(10, ' ') << "+-----------+" << std::endl;
 
     for (int r = 0; r < 18; ++r) {
         // Player 1 board rendering
@@ -56,7 +56,7 @@ void TextDisplay::printSideBySideBoards(Player* player1, Player* player2) {
         std::cout << "|" << std::endl;
     }
 
-    std::cout << "+----------+" << std::string(10, ' ') << "+----------+" << std::endl;
+    std::cout << "+-----------+" << std::string(10, ' ') << "+-----------+" << std::endl;
 }
 
 void TextDisplay::printCell(Cell* cell) {
@@ -90,8 +90,8 @@ void TextDisplay::printNextBlocks(Player* player1, Player* player2) {
         }
         std::cout << "|" << std::endl;
     }
+    std::cout << "*-----------*" << std::string(10, ' ') << "*-----------*" << std::endl;   
 }
-
 char TextDisplay::getBlockTypeChar(Block* block) {
     if (!block) return ' ';
     switch(block->getType()) {
