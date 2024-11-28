@@ -1,27 +1,48 @@
 #include "game.h"
 #include "level0.h"
-#include "level1.h"  // Include appropriate level header
+#include "level1.h"
+#include "level2.h"
+#include "level3.h"
+#include "level4.h"  // Include appropriate level header
 #include <iostream>
 #include <stdexcept>
 
 // Constructor
-Game::Game(const std::string& player1Name, const std::string& player2Name)
+Game::Game(const std::string& player1Name, const std::string& player2Name, int player1Level, int player2Level)
     : player1(player1Name), player2(player2Name), 
       currentPlayer(&player1), gameOver(false),
       textDisplay(this) {
-    initialize();
+    initialize(player1Level, player2Level);
 }
 
-void Game::initialize() {
-
+void Game::initialize(int player1Level, int player2Level) {
+    // Reset player turns
     player1.resetTurn();
     player2.resetTurn();
-    // Set initial levels for players (example using Level0)
-    player1.setLevel(new Level1(&player1));
-    player2.setLevel(new Level1(&player2));
+
+    // Dynamically set levels for both players
+    switch (player1Level) {
+        //case 0: player1.setLevel(new Level0(&player1)); break;
+        case 1: player1.setLevel(new Level1(&player1)); break;
+        case 2: player1.setLevel(new Level2(&player1)); break;
+        case 3: player1.setLevel(new Level3(&player1)); break;
+        case 4: player1.setLevel(new Level4(&player1)); break;
+        default:
+            throw std::invalid_argument("Invalid level for player 1.");
+    }
+
+    switch (player2Level) {
+        //case 0: player2.setLevel(new Level0(&player2)); break;
+        case 1: player2.setLevel(new Level1(&player2)); break;
+        case 2: player2.setLevel(new Level2(&player2)); break;
+        case 3: player2.setLevel(new Level3(&player2)); break;
+        case 4: player2.setLevel(new Level4(&player2)); break;
+        default:
+            throw std::invalid_argument("Invalid level for player 2.");
+    }
 
     // Set initial turn
-    player1.setIsTurn(true);
+    player1.setIsTurn(true);  // Player 1 starts
     player2.setIsTurn(false);
 
     // Generate initial blocks for both players
@@ -34,6 +55,7 @@ void Game::initialize() {
     player2.getBoard()->setCurrentBlock(block2);
     player2.getBoard()->setNextBlock(player2.generateNextBlock());
 }
+
 
 void Game::start() {
     
@@ -134,20 +156,48 @@ void Game::processCommand(const std::string& command) {
 
     Board* currentBoard = currentPlayer->getBoard();
     Block* currentBlock = currentBoard->getCurrentBlock();
+    bool isHeavy = currentBlock->isHeavy();
+    int blockWeight = currentBlock->getWeight();
 
     if (repeatCount == 0) repeatCount = 1;
 
-    if (interpretedCommand == "left") {
+    if (interpretedCommand == "left" || interpretedCommand == "right") {
+        Direction moveDir = (interpretedCommand == "left") ? Direction::Left : Direction::Right;
+
         for (int i = 0; i < repeatCount; ++i) {
-            if (currentBoard->canMove(currentBlock, Direction::Left)) {
-                currentBoard->moveBlock(currentBlock, Direction::Left);
+            if (currentBoard->canMove(currentBlock, moveDir)) {
+                currentBoard->moveBlock(currentBlock, moveDir);
             }
         }
-    }
-    else if (interpretedCommand == "right") {
+
+        // Apply heavy effect if the block is heavy
+        if (isHeavy) {
+            for (int i = 0; i < blockWeight; ++i) {
+                if (currentBoard->canMove(currentBlock, Direction::Down)) {
+                    currentBoard->moveBlock(currentBlock, Direction::Down);
+                } else {
+                    checkGameState();
+                    switchTurns();; // Stop if the block cannot move down further
+                }
+            }
+        }
+    } 
+    else if (interpretedCommand == "clockwise" || interpretedCommand == "counterclockwise") {
+        Direction rotateDir = (interpretedCommand == "clockwise") ? Direction::Clockwise : Direction::CounterClockwise;
+
         for (int i = 0; i < repeatCount; ++i) {
-            if (currentBoard->canMove(currentBlock, Direction::Right)) {
-                currentBoard->moveBlock(currentBlock, Direction::Right);
+            currentBoard->rotateBlock(currentBlock, rotateDir);
+        }
+
+        // Apply heavy effect if the block is heavy and the level is 3 or 4
+        if (isHeavy && (currentPlayer->getLevel()->getLevel() >= 3)) {
+            for (int i = 0; i < blockWeight; ++i) {
+                if (currentBoard->canMove(currentBlock, Direction::Down)) {
+                    currentBoard->moveBlock(currentBlock, Direction::Down);
+                } else {
+                    checkGameState();
+                    switchTurns(); // Stop if the block cannot move down further
+                }
             }
         }
     }
@@ -158,26 +208,19 @@ void Game::processCommand(const std::string& command) {
             }
         }
     }
-    else if (interpretedCommand == "clockwise") {
-        for (int i = 0; i < repeatCount; ++i) { currentBoard->rotateBlock(currentBlock, Direction::Clockwise) ;}
-    }
-    else if (interpretedCommand == "counterclockwise") {
-        for (int i = 0; i < repeatCount; ++i) {currentBoard->rotateBlock(currentBlock, Direction::CounterClockwise); }
-    }
     else if (interpretedCommand == "drop") {
         currentBoard->dropBlock(currentBlock);
         checkGameState();
         switchTurns();
     }
-
     else if (interpretedCommand == "levelup") {
         for (int i = 0; i < repeatCount; ++i) {
-            levelUp(currentPlayer);  // Increase player's level
+            levelUp(currentPlayer);
         }
     }
     else if (interpretedCommand == "leveldown") {
         for (int i = 0; i < repeatCount; ++i) {
-            levelDown(currentPlayer);  // Decrease player's level
+            levelDown(currentPlayer);
         }
     }
     // Add more command handlers as needed

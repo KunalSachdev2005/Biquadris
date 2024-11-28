@@ -28,6 +28,11 @@ void Cell::setBlock(Block* block) {
     this->block = block;
 }
 
+void Cell::setRowCol(int row, int col) {
+    row = row;
+    col = col;
+}
+
 void Cell::clear() {
     block = nullptr; // clear the block occupying the cell
 }

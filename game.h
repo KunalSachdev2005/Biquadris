@@ -22,10 +22,10 @@ private:
 public:
     // Constructors
     Game(const std::string& player1Name = "Player 1", 
-         const std::string& player2Name = "Player 2");
+         const std::string& player2Name = "Player 2", int player1Level = 1, int player2Level = 1);
     
     // Game management methods
-    void initialize();
+    void initialize(int player1Level, int player2Level);
     void start();
     void switchTurns();
     void processCommand(const std::string& command);
