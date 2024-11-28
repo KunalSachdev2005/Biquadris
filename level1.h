@@ -5,7 +5,7 @@
 
 class Level1 : public Level {
 public:
-    Level1(Player* player); // Constructor
+    Level1(Player* player, int seed = 0); // Constructor
     ~Level1() override; // Destructor
 
     Block* generateBlock() override; // Generate block for Level 1

@@ -1,9 +1,13 @@
 #include "level3.h"
 
 // Constructor for Level 3
-Level3::Level3(Player* player) : Level(3, player) {
+Level3::Level3(Player* player, int seed) : Level(3, player) {
     // Seed random number generator for block generation
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    if (seed != 0) {
+        std::srand(seed);
+    } else {
+        std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    }
 }
 
 // Destructor for Level 3

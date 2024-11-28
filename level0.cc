@@ -2,10 +2,11 @@
 
 Level0::Level0(const std::string& fileName, Player* player) : Level(0, player), currentIndex(0) {
     file.open(fileName);
-    // if (!file) {
-    //     throw std::runtime_error("Unable to open file: " + fileName);
-    // }
+    if (!file) {
+        throw std::runtime_error("Unable to open script file: " + fileName);
+    }
 
+    // Reading block sequence from file
     std::string blockType;
     while (file >> blockType) {
         blockSequence.push_back(blockType);
@@ -14,7 +15,11 @@ Level0::Level0(const std::string& fileName, Player* player) : Level(0, player), 
 }
 
 // Destructor for Level0
-Level0::~Level0() {}
+Level0::~Level0() {
+    if (file.is_open()) {
+        file.close();
+    }
+}
 
 // Override generateBlock method
 Block* Level0::generateBlock() {

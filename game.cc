@@ -8,17 +8,24 @@
 #include <stdexcept>
 
 // Constructor
-Game::Game(const std::string& player1Name, const std::string& player2Name, int player1Level, int player2Level)
-    : player1(player1Name), player2(player2Name), 
-      currentPlayer(&player1), gameOver(false),
-      textDisplay(this) {
-    initialize(player1Level, player2Level);
+Game::Game(const std::string& player1Name, const std::string& player2Name, int startLevel, const std::string& scriptFile1,
+            const std::string& scriptFile2, int randomSeed)
+    : player1(player1Name), player2(player2Name),currentPlayer(&player1), gameOver(false), textDisplay(this), scriptFile1(scriptFile1),
+    scriptFile2(scriptFile2), randomSeed(randomSeed) {
+    initialize(startLevel, startLevel);
 }
 
 void Game::initialize(int player1Level, int player2Level) {
     // Reset player turns
     player1.resetTurn();
     player2.resetTurn();
+
+    // Set random seed (shared by all levels)
+    if (randomSeed != 0) {
+        std::srand(randomSeed);
+    } else {
+        std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    }
 
     // Dynamically set levels for both players
     switch (player1Level) {

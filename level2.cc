@@ -1,9 +1,13 @@
 #include "level2.h"
 
 // Constructor for Level 2
-Level2::Level2(Player* player) : Level(2, player) {
+Level2::Level2(Player* player, int seed) : Level(2, player) {
     // Seed random number generator for block generation
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    if (seed != 0) {
+        std::srand(seed);
+    } else {
+        std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    }
 }
 
 // Destructor for Level 2

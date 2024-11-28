@@ -18,11 +18,14 @@ private:
     bool gameOver;
     CommandInterpreter commandInterpreter;
     TextDisplay textDisplay;
+    std::string scriptFile1;
+    std::string scriptFile2;
+    int randomSeed;
 
 public:
     // Constructors
-    Game(const std::string& player1Name = "Player 1", 
-         const std::string& player2Name = "Player 2", int player1Level = 1, int player2Level = 1);
+    Game(const std::string& player1Name, const std::string& player2Name, int startLevel, const std::string& scriptFile1 = "sequence1.txt", 
+        const std::string& scriptFile2 = "sequence2.txt", int randomSeed = 0);
     
     // Game management methods
     void initialize(int player1Level, int player2Level);

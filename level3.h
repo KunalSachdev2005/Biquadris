@@ -5,7 +5,7 @@
 
 class Level3 : public Level {
 public:
-    Level3(Player* player); // Constructor
+    Level3(Player* player, int seed = 0); // Constructor
     ~Level3(); // Destructor
 
     Block* generateBlock() override; // Generates blocks with skewed probabilities for Level 3
