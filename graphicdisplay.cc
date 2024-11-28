@@ -2,42 +2,42 @@
 #include <sstream>
 #include <iomanip>
 
-GraphicDisplay::GraphicDisplay(Game* game) : game(game), window(new Xwindow()) {}
+GraphicDisplay::GraphicDisplay(Game* game) : game(game), window(new XWindow()) {}
 
 GraphicDisplay::~GraphicDisplay() {
     delete window;
 }
 
-Xwindow::Color GraphicDisplay::getBlockColor(Type blockType) const {
+XWindow::Color GraphicDisplay::getBlockColor(Type blockType) const {
     switch (blockType) {
-        case Type::I: return Xwindow::Cyan;
-        case Type::J: return Xwindow::Blue;
-        case Type::L: return Xwindow::Orange;
-        case Type::O: return Xwindow::Yellow;
-        case Type::S: return Xwindow::Green;
-        case Type::T: return Xwindow::Magenta;
-        case Type::Z: return Xwindow::Red;
-        default: return Xwindow::White;
+        case Type::I: return XWindow::Cyan;
+        case Type::J: return XWindow::Blue;
+        case Type::L: return XWindow::Orange;
+        case Type::O: return XWindow::Yellow;
+        case Type::S: return XWindow::Green;
+        case Type::T: return XWindow::Magenta;
+        case Type::Z: return XWindow::Red;
+        default: return XWindow::White;
     }
 }
 
 void GraphicDisplay::drawCell(int x, int y, Block* block) {
     if (!block) {
-        window->fillRectangle(x, y, CELL_SIZE, CELL_SIZE, Xwindow::White);
+        window->fillRectangle(x, y, CELL_SIZE, CELL_SIZE, XWindow::White);
         return;
     }
     
-    Xwindow::Color color = getBlockColor(block->getType());
+    XWindow::Color color = getBlockColor(block->getType());
     window->fillRectangle(x, y, CELL_SIZE, CELL_SIZE, color);
-    window->drawLine(x, y, x + CELL_SIZE, y, Xwindow::Black);
-    window->drawLine(x + CELL_SIZE, y, x + CELL_SIZE, y + CELL_SIZE, Xwindow::Black);
+    window->drawLine(x, y, x + CELL_SIZE, y, XWindow::Black);
+    window->drawLine(x + CELL_SIZE, y, x + CELL_SIZE, y + CELL_SIZE, XWindow::Black);
 }
 
 void GraphicDisplay::drawBoard(Player* player, int startX, int startY) {
     Board* board = player->getBoard();
     
     // Draw board background
-    window->fillRectangle(startX, startY, BOARD_WIDTH * CELL_SIZE, BOARD_HEIGHT * CELL_SIZE, Xwindow::White);
+    window->fillRectangle(startX, startY, BOARD_WIDTH * CELL_SIZE, BOARD_HEIGHT * CELL_SIZE, XWindow::White);
     
     // Draw cells
     for (int r = 0; r < BOARD_HEIGHT; ++r) {
@@ -63,7 +63,7 @@ void GraphicDisplay::drawScoreAndLevel(Player* player, int startX, int startY) {
 
 void GraphicDisplay::update() {
     // Clear entire window
-    window->fillRectangle(0, 0, window->getWidth(), window->getHeight(), Xwindow::White);
+    window->fillRectangle(0, 0, window->getWidth(), window->getHeight(), XWindow::White);
 
     Player* player1 = game->getPlayer1();
     Player* player2 = game->getPlayer2();

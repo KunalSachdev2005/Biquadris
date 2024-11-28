@@ -1,14 +1,14 @@
-#include "window.h"
+#include "xwindow.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <iostream>
 #include <cstdlib>
 #include <unistd.h>
+#include <iostream>
 
-Xwindow::Xwindow(int width, int height) : width(width), height(height) {
+XWindow::XWindow(int width, int height) : width(width), height(height) {
     d = XOpenDisplay(NULL);
     if (d == NULL) {
-        cerr << "Cannot open display" <<endl;
+        std::cerr << "Cannot open display" << std::endl;
         exit(1);
     }
     s = DefaultScreen(d);
@@ -44,24 +44,27 @@ Xwindow::Xwindow(int width, int height) : width(width), height(height) {
     usleep(1000);
 }
 
-Xwindow::~Xwindow() {
+XWindow::~XWindow() {
     XFreeGC(d, gc);
     XCloseDisplay(d);
 }
 
-int Xwindow::getWidth() const { return width; }
-int Xwindow::getHeight() const { return height; }
+int XWindow::getWidth() const { return width; }
+int XWindow::getHeight() const { return height; }
 
-void Xwindow::fillRectangle(int x, int y, int width, int height, int colour) {
+void XWindow::fillRectangle(int x, int y, int width, int height, int colour) {
     XSetForeground(d, gc, colours[colour]);
     XFillRectangle(d, w, gc, x, y, width, height);
     XSetForeground(d, gc, colours[Black]);
 }
 
-void Xwindow::drawString(int x, int y, std::string msg) {
+void XWindow::drawString(int x, int y, std::string msg) {
     XDrawString(d, w, gc, x, y, msg.c_str(), msg.length());
 }
 
-void Xwindow::drawLine(int x1, int y1, int x2, int y2) {
-    XDrawLine(d, w, gc, x1, y1, x2, y2);
+void XWindow::drawLine(int x1, int y1, int x2, int y2, int colour) {
+    XSetForeground(d, gc, colours[colour]); // Set the desired color
+    XDrawLine(d, w, gc, x1, y1, x2, y2);    // Draw the line
+    XSetForeground(d, gc, colours[Black]);  // Reset to default color
+    //XDrawLine(d, w, gc, x1, y1, x2, y2);
 }

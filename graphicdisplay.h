@@ -7,7 +7,7 @@
 class GraphicDisplay {
 private:
     Game* game;
-    Xwindow* window;
+    XWindow* window;
 
     // Drawing configuration
     const int BOARD_START_X = 50;
@@ -20,7 +20,7 @@ private:
     void drawCell(int x, int y, Block* block);
     void drawBoard(Player* player, int startX, int startY);
     void drawScoreAndLevel(Player* player, int startX, int startY);
-    Xwindow::Color getBlockColor(Type blockType) const;
+    XWindow::Color getBlockColor(Type blockType) const;
 
 public:
     GraphicDisplay(Game* game);
