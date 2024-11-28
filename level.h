@@ -28,6 +28,8 @@ public:
     virtual ~Level(); // Virtual destructor
     int getLevel();
     virtual Block* generateBlock() = 0; // Pure virtual function for generating a block
+    virtual void setSequenceMode(const std::string& filePath) {} // Default: do nothing
+    virtual void setRandomMode() {} // Default: do nothing
 };
 
 #endif // LEVEL_H
