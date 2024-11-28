@@ -2,6 +2,7 @@
 #include "cell.h"
 #include "direction.h"
 #include "board.h"
+#include <iostream>
 
 const int DEFAULT_WEIGHT = 0;
 
@@ -77,6 +78,10 @@ void Block::setBaseCell(Cell* base) {
 
 // Place the block on the board based on the base cell and shape offsets
 void Block::placeOnBoard(Board& board) {
+    std::cout << "Placing block on board. Base cell: (" 
+              << baseCell->getRow() << ", " 
+              << baseCell->getCol() << ")" << std::endl;
+
     cells.clear();  // Clear any previously set cells
 
     // Loop through each offset in the shape
@@ -84,15 +89,25 @@ void Block::placeOnBoard(Board& board) {
         int new_row = baseCell->getRow() - offset.first;  
         int new_col = baseCell->getCol() + offset.second; 
 
+        std::cout << "Checking cell: (" << new_row << ", " << new_col << ")" << std::endl;
+
         // Ensure the new position is within bounds
         if (new_row >= 0 && new_row < board.getRows() && new_col >= 0 && new_col < board.getCols()) {
             Cell* cell = board.at(new_row, new_col);
+            if (cell == nullptr) {
+                std::cerr << "ERROR: Null cell at (" << new_row << ", " << new_col << ")" << std::endl;
+                continue;
+            }
             cells.push_back(cell);
-        } 
+        } else {
+            std::cerr << "ERROR: Cell out of bounds: (" << new_row << ", " << new_col << ")" << std::endl;
+        }
     }
 
     // After placing the block on the board, update all its cells
     updateCells();
+    
+    std::cout << "Block placed. Total cells: " << cells.size() << std::endl;
 }
 
 // Update the cells occupied by the block, linking them to this block

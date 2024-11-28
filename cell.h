@@ -28,6 +28,7 @@ public:
     Block* getBlock() const;
 
     // Mutator methods
+    void setRowCol(int row, int col);
     void setBlock(Block* block);
     void clear();
 

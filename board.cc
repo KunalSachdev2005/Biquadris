@@ -45,7 +45,7 @@ void Board::setCurrentBlock(Block* block) {
         }
     }
     currentBlock = block;
-    currentBlock->setBaseCell(at(5,0));
+    currentBlock->setBaseCell(at(4,0));
 }
 
 void Board::setNextBlock(Block* block) {
@@ -159,6 +159,7 @@ void Board::moveBlock(Block* block, Direction dir) {
             block->setBaseCell(at(originalRow, originalCol - 1)); // Left shift
             break;
         case Direction::Down:
+            std::cout<<"Changing base cell.";
             block->setBaseCell(at(originalRow + 1, originalCol)); // Down shift
             break;
     }
@@ -176,20 +177,36 @@ void Board::rotateBlock(Block* block, Direction dir) {
 }
 
 void Board::dropBlock(Block* block) {
+    std::cout << "Dropping block at base cell: (" 
+              << block->getBaseCell()->getRow() << ", " 
+              << block->getBaseCell()->getCol() << ")" << std::endl;
+
     // Get the current position of the base cell
     Cell* baseCell = block->getBaseCell();
     int originalRow = baseCell->getRow();
     int originalCol = baseCell->getCol();
 
     // Try to move the block down as far as possible
+    int dropCount = 0;
     while (canMove(block, Direction::Down)) {
-        // Move the block down one cell
         moveBlock(block, Direction::Down);
+        dropCount++;
+        std::cout << "Dropped block down. Current position: (" 
+                  << block->getBaseCell()->getRow() << ", " 
+                  << block->getBaseCell()->getCol() << ")" << std::endl;
     }
+
+    std::cout << "Block dropped " << dropCount << " times" << std::endl;
 
     // After the block has dropped to the lowest position, finalize the block's position
     block->placeOnBoard(*this);  // Final placement on the board
+    
+    std::cout << "Block placed on board" << std::endl;
+    
+    // Important: set currentBlock to nullptr after dropping
     currentBlock = nullptr;
+    
+    std::cout << "Current block set to nullptr" << std::endl;
 }
 
 bool Board::isRowFull(int row) {
@@ -203,63 +220,73 @@ bool Board::isRowFull(int row) {
 }
 
 int Board::clearRow(int row) {
-    int removedBlocksLevelSum = 0;  // Counter for the sum of levels of removed blocks
-    std::set<Block*> affectedBlocks;  // Track blocks affected by the row clearing
-
+    std::set<Block*> blocksToRemove;
+    std::set<Block*> blocksToModify;
+    
+    // Identify blocks that are in the row and need modification
     for (int col = 0; col < cols; ++col) {
-        Block* block = grid[row][col].getBlock();
-        if (block) {
-            affectedBlocks.insert(block);  // Track affected blocks
+        Cell* cell = &grid[row][col];
+        Block* blockAtCell = cell->getBlock();
+        
+        if (blockAtCell) {
+            blocksToModify.insert(blockAtCell);
         }
-        grid[row][col].setBlock(nullptr);  // Clear the cell
     }
-
-    for (Block* block : affectedBlocks) {
-        // Update block's shape to remove cleared offsets
+    
+    // Modify shapes of affected blocks
+    for (Block* block : blocksToModify) {
         std::vector<std::pair<int, int>> newShape;
-        const auto& oldShape = block->getShape();
-        for (const auto& offset : oldShape) {
-            int unitRow = block->getBaseCell()->getRow() - offset.first;
-            if (unitRow != row) {
-                // Keep the offset if the unit isn't in the cleared row
-                newShape.push_back(offset);
+        bool blockCompletelyRemoved = true;
+        
+        // Recalculate the shape, removing offsets at the cleared row
+        for (const auto& offset : block->getShape()) {
+            int blockRow = block->getBaseCell()->getRow() - offset.first;
+            
+            // Skip offsets in the cleared row
+            if (blockRow != row) {
+                // Adjust offset if it was below the cleared row
+                if (blockRow > row) {
+                    newShape.push_back(std::make_pair(offset.first + 1, offset.second));
+                } else {
+                    newShape.push_back(offset);
+                }
+                blockCompletelyRemoved = false;
             }
         }
-        if (newShape.empty()) {
-            removedBlocksLevelSum += block->getLevelGenerated();
-        // Clear all cells referencing this block
-            for (Cell* cell : block->getCells()) {
-                if (cell) {
-                    cell->setBlock(nullptr);
-                }   
-            }
-            delete block;  // Free memory for the removed block
-        } else {
-            // Update block's shape and reapply to the board
-            block->clearOldCells();
-            block->setShape(newShape);  // Update the shape with the new offsets
+        
+        // If block is completely removed
+        if (blockCompletelyRemoved) {
+            blocksToRemove.insert(block);
+            continue;
         }
+        
+        // Update the block's shape
+        block->setShape(newShape);
     }
-
-    for (int r = row - 1; r >= 0; --r) {
+    
+    // Shift rows down
+    for (int r = row; r > 0; --r) {
         for (int c = 0; c < cols; ++c) {
-            Cell& aboveCell = grid[r][c];
-            Cell& belowCell = grid[r + 1][c];
-            Block* block = aboveCell.getBlock();
-
-            belowCell.setBlock(block);  // Move block reference down
-            if (block) {
-                block->clearOldCells();
-                block->setBaseCell(&belowCell);  // Update base cell
-            }
-
-            aboveCell.setBlock(nullptr);  // Clear the above cell
+            // Move cell data from row above
+            grid[r][c] = grid[r-1][c];
+            grid[r][c].setRowCol(r, c);
         }
     }
-
-    rowsCleared++;  // Increment the cleared rows counter
-    return removedBlocksLevelSum;  // Return the total levels of removed blocks
+    
+    // Clear the top row
+    for (int c = 0; c < cols; ++c) {
+        grid[0][c] = Cell(0, c, this);
+    }
+    
+    // Calculate score based on blocks completely removed
+    int scoreToAdd = 0;
+    for (Block* block : blocksToRemove) {
+        scoreToAdd += block->getLevelGenerated();
+    }
+    
+    return scoreToAdd;
 }
+
 
 
 Cell* Board::at(int row, int col) {
