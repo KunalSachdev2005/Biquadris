@@ -14,6 +14,7 @@ private:
     int col;
     Block* block;
     Board* board;
+    bool blind;
 
 public:
     // Constructor
@@ -34,6 +35,8 @@ public:
 
     // Utility method
     bool isOccupied() const;
+    bool isBlind() const;
+    void setBlind(bool b);
 };
 
 #endif // CELL_H

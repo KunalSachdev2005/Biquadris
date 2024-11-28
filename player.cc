@@ -1,4 +1,5 @@
 #include "player.h"
+#include "specialaction.h"
 
 // Constructor
 Player::Player(std::string playerName) 
@@ -52,8 +53,4 @@ Block* Player::generateNextBlock() {
     return nullptr;  // Or handle error appropriately
 }
 
-void Player::applySpecialAction(int actionType) {
-    // Implement special action logic based on game rules
-    // This would be called when a special action is triggered
-    // Different actions could be implemented based on the actionType
-}
+

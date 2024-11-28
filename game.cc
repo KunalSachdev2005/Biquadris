@@ -6,6 +6,9 @@
 #include "level4.h"  // Include appropriate level header
 #include <iostream>
 #include <stdexcept>
+#include "blind.h"
+#include "force.h"
+#include "heavy.h"
 
 // Constructor
 Game::Game(const std::string& player1Name, const std::string& player2Name, int startLevel, const std::string& scriptFile1,
@@ -217,6 +220,7 @@ void Game::processCommand(const std::string& command) {
     }
     else if (interpretedCommand == "drop") {
         currentBoard->dropBlock(currentBlock);
+        currentBoard->setBlinded(false);
         checkGameState();
         switchTurns();
     }
@@ -245,6 +249,30 @@ void Game::checkGameState() {
     }
     if (rowsCleared > 0) currentPlayer->getScore().addScore(blockScore + (rowsCleared + currentPlayer->getLevel()->getLevel())* (rowsCleared + currentPlayer->getLevel()->getLevel()));  // Adjust scoring as needed
 
+    if(rowsCleared > 0) {
+        std::cout << "Special action triggered! Choose your action (blind, heavy, force): ";
+            std::string actionChoice;
+            std::cin >> actionChoice;
+
+            SpecialAction* action = nullptr;
+            if (actionChoice == "blind") {
+                action = new Blind(currentPlayer, getOpponentPlayer());
+            } else if (actionChoice == "heavy") {
+                action = new Heavy(currentPlayer, getOpponentPlayer());
+            } else if (actionChoice == "force") {
+                std::cout << "Choose block type for force action (I, J, L, O, S, T, Z): ";
+                char blockTypeChar;
+                std::cin >> blockTypeChar;
+                Type blockType = charToType(blockTypeChar); // Implement charToType to convert char to Type enum
+                action = new Force(currentPlayer, getOpponentPlayer(), blockType);
+            } 
+
+            if (action) {
+                applySpecialAction(action);
+                delete action;
+            }
+    }
+
     // Check if current player needs a new block
     if (!currentPlayer->getBoard()->getCurrentBlock()) {
         Block* newBlock = currentPlayer->generateNextBlock();
@@ -253,9 +281,21 @@ void Game::checkGameState() {
     }
 }
 
-void Game::applySpecialAction() {
-    // Implement special action logic between players
-    // Could involve sending special blocks or modifying opponent's board
+void Game::applySpecialAction(SpecialAction* action) {
+    action->execute();
+}
+
+Type Game::charToType(char ch) {
+    switch(ch) {
+        case 'I': return Type::I; 
+        case 'J': return Type::J; 
+        case 'T': return Type::T; 
+        case 'S': return Type::S; 
+        case 'Z': return Type::Z; 
+        case 'O': return Type::O; 
+        case 'L': return Type::L;
+        default: return Type::I;
+    }
 }
 
 void Game::handleGameOver() {

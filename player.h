@@ -6,6 +6,7 @@
 #include "score.h"
 #include "level.h"
 
+class SpecialAction;
 
 class Level;
 
@@ -43,7 +44,7 @@ public:
     void updateHighScore();
     void resetTurn();
     Block* generateNextBlock();
-    void applySpecialAction(int actionType);
+    void applySpecialAction(SpecialAction* action);
 };
 
 #endif // PLAYER_H

@@ -78,9 +78,7 @@ void Block::setBaseCell(Cell* base) {
 
 // Place the block on the board based on the base cell and shape offsets
 void Block::placeOnBoard(Board& board) {
-    std::cout << "Placing block on board. Base cell: (" 
-              << baseCell->getRow() << ", " 
-              << baseCell->getCol() << ")" << std::endl;
+    
 
     cells.clear();  // Clear any previously set cells
 
@@ -89,7 +87,7 @@ void Block::placeOnBoard(Board& board) {
         int new_row = baseCell->getRow() - offset.first;  
         int new_col = baseCell->getCol() + offset.second; 
 
-        std::cout << "Checking cell: (" << new_row << ", " << new_col << ")" << std::endl;
+       
 
         // Ensure the new position is within bounds
         if (new_row >= 0 && new_row < board.getRows() && new_col >= 0 && new_col < board.getCols()) {
@@ -107,7 +105,7 @@ void Block::placeOnBoard(Board& board) {
     // After placing the block on the board, update all its cells
     updateCells();
     
-    std::cout << "Block placed. Total cells: " << cells.size() << std::endl;
+   
 }
 
 // Update the cells occupied by the block, linking them to this block

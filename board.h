@@ -24,6 +24,8 @@ private:
     const int rows = BOARD_ROWS;                   // Number of rows (main game area)
     const int cols = BOARD_COLS;                   // Number of columns
 
+    bool blinded;
+
 public:
     //Board(Player* player);
     Board();
@@ -47,6 +49,9 @@ public:
     //void applySpecialActions();
     Cell* at(int row, int col);  // Get the cell at (row, col)
     void printTextDisplay();
+
+    void setBlinded(bool blind);
+    bool isBlinded() const;
 };
 
-#endif // BOARD_H
+#endif

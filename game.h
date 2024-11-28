@@ -35,6 +35,8 @@ public:
     void checkGameState();
     void applySpecialAction();
     void handleGameOver();
+
+    Type charToType(char ch);
     
     // Getters
     Player* getCurrentPlayer();
@@ -50,6 +52,8 @@ public:
 
     void levelUp(Player* player);
     void levelDown(Player* player);
+
+    void applySpecialAction(SpecialAction* action);
 };
 
 #endif // GAME_H

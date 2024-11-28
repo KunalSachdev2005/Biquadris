@@ -21,6 +21,7 @@ void TextDisplay::update() {
     std::cout << "Hi Score: " 
               << std::setw(5) << player1->getHighScore().getScore() 
               << std::setw(15) << player2->getHighScore().getScore() << std::endl;
+              
 
     // Print boards side by side (first 18 rows)
     printSideBySideBoards(player1, player2);
@@ -34,10 +35,10 @@ void TextDisplay::update() {
 
 void TextDisplay::printSideBySideBoards(Player* player1, Player* player2) {
     std::cout << "+-----------+" << std::string(10, ' ') << "+-----------+" << std::endl;
-
     for (int r = 0; r < 18; ++r) {
         // Player 1 board rendering
         std::cout << "|";
+        
         for (int c = 0; c < 11; ++c) {
             Cell* cell = player1->getBoard()->at(r, c);
             printCell(cell);
@@ -60,7 +61,10 @@ void TextDisplay::printSideBySideBoards(Player* player1, Player* player2) {
 }
 
 void TextDisplay::printCell(Cell* cell) {
-    if (!cell || !cell->isOccupied()) {
+    if (cell->isBlind()) {
+        std::cout << "?";
+    }
+    else if (!cell || !cell->isOccupied()) {
         std::cout << " ";
     } else {
         Block* block = cell->getBlock();

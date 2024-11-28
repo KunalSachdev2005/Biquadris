@@ -4,7 +4,7 @@
 
 
 // Constructor
-Cell::Cell(int row, int col, Board* board) : row(row), col(col), block(nullptr), board(board) {}
+Cell::Cell(int row, int col, Board* board) : row(row), col(col), block(nullptr), board(board) { blind = false; }
 
 // Accessor methods
 int Cell::getRow() const {
@@ -41,3 +41,9 @@ void Cell::clear() {
 bool Cell::isOccupied() const {
     return block != nullptr;
 }
+
+void Cell::setBlind(bool b) {
+    blind = b;
+}
+
+bool Cell::isBlind() const { return blind; }

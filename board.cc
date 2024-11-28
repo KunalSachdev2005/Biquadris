@@ -10,6 +10,8 @@ const int BOARD_VALID_ROWS = 21;
 // Constructor: Initializes the board with a given number of rows and columns
 Board::Board()
     : rowsCleared(0), currentBlock(nullptr), nextBlock(nullptr) {
+
+    blinded = false;
     // Initialize the grid with 21 rows and 11 columns (3 additional rows for the next block)
     grid.resize(rows, std::vector<Cell>(cols));
 
@@ -94,6 +96,34 @@ bool Board::canMove(Block* block, Direction dir) {
     return true;
 }
 
+void Board::setBlinded(bool blind) {
+
+        blinded = blind;
+
+        if(blinded) {
+            for (int r = 3; r < 12; ++r) {
+                for (int c = 3; c < 9; ++c) {
+                    Cell* cell = at(r, c);
+                    // Mark this cell as "covered"
+                    cell->setBlind(true);
+                   
+                }
+            }
+        }
+        else {
+            for (int r = 3; r < 12; ++r) {
+                for (int c = 3; c < 9; ++c) {
+                    Cell* cell = at(r, c);
+                    cell->setBlind(false);
+                }
+            }
+        }
+}
+
+bool Board::isBlinded() const {
+        return blinded;
+}
+
 
 
 bool Board::canRotate(Block* block, Direction dir) {
@@ -162,7 +192,6 @@ void Board::moveBlock(Block* block, Direction dir) {
             block->setBaseCell(at(originalRow, originalCol - 1)); // Left shift
             break;
         case Direction::Down:
-            std::cout<<"Changing base cell.";
             block->setBaseCell(at(originalRow + 1, originalCol)); // Down shift
             break;
     }
@@ -177,9 +206,7 @@ void Board::rotateBlock(Block* block, Direction dir) {
 }
 
 void Board::dropBlock(Block* block) {
-    std::cout << "Dropping block at base cell: (" 
-              << block->getBaseCell()->getRow() << ", " 
-              << block->getBaseCell()->getCol() << ")" << std::endl;
+
 
     // Get the current position of the base cell
     Cell* baseCell = block->getBaseCell();
@@ -191,22 +218,20 @@ void Board::dropBlock(Block* block) {
     while (canMove(block, Direction::Down)) {
         moveBlock(block, Direction::Down);
         dropCount++;
-        std::cout << "Dropped block down. Current position: (" 
-                  << block->getBaseCell()->getRow() << ", " 
-                  << block->getBaseCell()->getCol() << ")" << std::endl;
+        
     }
 
-    std::cout << "Block dropped " << dropCount << " times" << std::endl;
+    
 
     // After the block has dropped to the lowest position, finalize the block's position
     block->placeOnBoard(*this);  // Final placement on the board
     
-    std::cout << "Block placed on board" << std::endl;
+    
     
     // Important: set currentBlock to nullptr after dropping
     currentBlock = nullptr;
     
-    std::cout << "Current block set to nullptr" << std::endl;
+    
 }
 
 bool Board::isRowFull(int row) {
