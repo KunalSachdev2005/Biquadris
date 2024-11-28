@@ -168,7 +168,53 @@ void Game::processCommand(const std::string& command) {
 
     if (repeatCount == 0) repeatCount = 1;
 
-    if (interpretedCommand == "left" || interpretedCommand == "right") {
+    if (interpretedCommand == "norandom") {
+        if (currentPlayer->getLevel()->getLevel() >= 3) {
+            std::string filePath = command.substr(command.find(' ') + 1);
+            currentPlayer->getLevel()->setSequenceMode(filePath);
+        } else {
+            throw std::runtime_error("norandom command is only valid for levels 3 and 4.");
+        }
+    }
+    else if (interpretedCommand == "random") {
+        if (currentPlayer->getLevel()->getLevel() >= 3) {
+            currentPlayer->getLevel()->setRandomMode();
+        } else {
+            throw std::runtime_error("random command is only valid for levels 3 and 4.");
+        }
+    }
+    else if (interpretedCommand == "sequence") {
+        std::string filePath = command.substr(command.find(' ') + 1);
+        std::ifstream sequenceFile(filePath);
+        if (!sequenceFile) {
+            throw std::runtime_error("Unable to open sequence file: " + filePath);
+        }
+
+        std::string line;
+        while (std::getline(sequenceFile, line)) {
+            processCommand(line);
+        }
+    }
+    else if (interpretedCommand == "I" || interpretedCommand == "J" || interpretedCommand == "L" || interpretedCommand == "O" || 
+             interpretedCommand == "S" || interpretedCommand == "Z" || interpretedCommand == "T") {
+                Cell* baseCell = currentBoard->at(3, 0);
+                Block* newBlock = nullptr;
+                int level = currentPlayer->getLevel()->getLevel();
+
+                if (interpretedCommand == "I") currentBoard->setCurrentBlock( newBlock = new IBlock(level, baseCell) );
+                else if (interpretedCommand == "J") currentBoard->setCurrentBlock( newBlock = new JBlock(level, baseCell) );
+                else if (interpretedCommand == "L") currentBoard->setCurrentBlock( newBlock = new LBlock(level, baseCell) );
+                else if (interpretedCommand == "O") currentBoard->setCurrentBlock( newBlock = new OBlock(level, baseCell) );
+                else if (interpretedCommand == "S") currentBoard->setCurrentBlock( newBlock = new SBlock(level, baseCell) );
+                else if (interpretedCommand == "Z") currentBoard->setCurrentBlock( newBlock = new ZBlock(level, baseCell) );
+                else if (interpretedCommand == "T") currentBoard->setCurrentBlock( newBlock = new TBlock(level, baseCell) );
+
+                if (level >= 3) {
+                    newBlock->setHeavy(true);
+                    newBlock->setWeight(1);
+                }
+             }
+    else if (interpretedCommand == "left" || interpretedCommand == "right") {
         Direction moveDir = (interpretedCommand == "left") ? Direction::Left : Direction::Right;
 
         for (int i = 0; i < repeatCount; ++i) {
