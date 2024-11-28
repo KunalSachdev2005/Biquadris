@@ -45,7 +45,7 @@ void Board::setCurrentBlock(Block* block) {
         }
     }
     currentBlock = block;
-    currentBlock->setBaseCell(at(4,0));
+    currentBlock->setBaseCell(at(3,0));
 }
 
 void Board::setNextBlock(Block* block) {
