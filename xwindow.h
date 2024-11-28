@@ -2,7 +2,7 @@
 #define __XWINDOW_H__
 
 #include <X11/Xlib.h>
-#include string
+#include "string"
 
 class XWindow {
 private:
@@ -22,8 +22,8 @@ public:
     int getHeight() const;
 
     void fillRectangle(int x, int y, int width, int height, int colour = Black);
-    void drawString(int x, int y, std::string msg)
-    void drawline(int x1, int y1, int x2, int y2);
+    void drawString(int x, int y, std::string msg);
+    void drawLine(int x1, int y1, int x2, int y2, int colour = Black);
 };
 
 #endif // __XWINDOW_H_
