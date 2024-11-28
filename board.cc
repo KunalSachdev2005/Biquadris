@@ -3,6 +3,9 @@
 #include "block.h"
 #include <iostream>
 #include <set>
+#include <map>
+
+const int BOARD_VALID_ROWS = 21;
 
 // Constructor: Initializes the board with a given number of rows and columns
 Board::Board()
@@ -50,9 +53,9 @@ void Board::setCurrentBlock(Block* block) {
 
 void Board::setNextBlock(Block* block) {
     nextBlock = block;
-    nextBlock->setBaseCell(at(20,0));
+    nextBlock->setBaseCell(at(23,0));
 }
-
+    
 bool Board::canMove(Block* block, Direction dir) {
     // Get the current position of the base cell of the block
     Cell* baseCell = block->getBaseCell();
@@ -76,7 +79,7 @@ bool Board::canMove(Block* block, Direction dir) {
         }
 
         // Check if the new position is out of bounds
-        if (newRow < 0 || newRow >= rows-3 || newCol < 0 || newCol >= cols) {
+        if (newRow < 0 || newRow >= BOARD_VALID_ROWS-3 || newCol < 0 || newCol >= cols) {
             return false;  // The move is out of bounds
         }
 
@@ -115,7 +118,7 @@ bool Board::canRotate(Block* block, Direction dir) {
         int newCol = baseCell->getCol() + offset.second;
 
         // Check if the new position is within bounds
-        if (newRow < 0 || newRow >= rows-3 || newCol < 0 || newCol >= cols) {
+        if (newRow < 0 || newRow >= BOARD_VALID_ROWS-3 || newCol < 0 || newCol >= cols) {
             return false;  // Out of bounds
         }
 
@@ -170,10 +173,7 @@ void Board::moveBlock(Block* block, Direction dir) {
 
 
 void Board::rotateBlock(Block* block, Direction dir) {
-    if (canRotate(block, dir)) {
-        // Rotate the block (clockwise or counterclockwise)
         block->rotate(dir);
-    }
 }
 
 void Board::dropBlock(Block* block) {
@@ -220,72 +220,46 @@ bool Board::isRowFull(int row) {
 }
 
 int Board::clearRow(int row) {
-    std::set<Block*> blocksToRemove;
-    std::set<Block*> blocksToModify;
-    
-    // Identify blocks that are in the row and need modification
-    for (int col = 0; col < cols; ++col) {
-        Cell* cell = &grid[row][col];
-        Block* blockAtCell = cell->getBlock();
-        
-        if (blockAtCell) {
-            blocksToModify.insert(blockAtCell);
-        }
-    }
-    
-    // Modify shapes of affected blocks
-    for (Block* block : blocksToModify) {
-        std::vector<std::pair<int, int>> newShape;
-        bool blockCompletelyRemoved = true;
-        
-        // Recalculate the shape, removing offsets at the cleared row
-        for (const auto& offset : block->getShape()) {
-            int blockRow = block->getBaseCell()->getRow() - offset.first;
-            
-            // Skip offsets in the cleared row
-            if (blockRow != row) {
-                // Adjust offset if it was below the cleared row
-                if (blockRow > row) {
-                    newShape.push_back(std::make_pair(offset.first + 1, offset.second));
-                } else {
-                    newShape.push_back(offset);
-                }
-                blockCompletelyRemoved = false;
-            }
-        }
-        
-        // If block is completely removed
-        if (blockCompletelyRemoved) {
-            blocksToRemove.insert(block);
-            continue;
-        }
-        
-        // Update the block's shape
-        block->setShape(newShape);
-    }
-    
-    // Shift rows down
-    for (int r = row; r > 0; --r) {
+    // Step 1: Collect all blocks on the board
+    std::set<Block*> boardBlocks;
+    for (int r = 17; r >= 0; --r) {
         for (int c = 0; c < cols; ++c) {
-            // Move cell data from row above
-            grid[r][c] = grid[r-1][c];
-            grid[r][c].setRowCol(r, c);
+            Block* block = grid[r][c].getBlock();
+            if (block) boardBlocks.insert(block);
         }
     }
-    
-    // Clear the top row
-    for (int c = 0; c < cols; ++c) {
-        grid[0][c] = Cell(0, c, this);
+
+    // Step 2: Precompute new base cell positions
+    std::map<Block*, Cell*> newBaseCells;
+    for (Block* block : boardBlocks) {
+        Cell* baseCell = block->getBaseCell();
+        newBaseCells[block] = at(baseCell->getRow() + 1, baseCell->getCol());
     }
-    
-    // Calculate score based on blocks completely removed
-    int scoreToAdd = 0;
-    for (Block* block : blocksToRemove) {
-        scoreToAdd += block->getLevelGenerated();
+
+    // Step 3: Apply new positions to blocks
+    for (auto& pair : newBaseCells) {
+        Block* block = pair.first;
+        Cell* newBaseCell = pair.second;
+        block->setBaseCell(newBaseCell);
     }
-    
-    return scoreToAdd;
+
+    // Step 4: Check which blocks are completely off the board
+    int blockScore = 0;
+    for (Block* block : boardBlocks) {
+        int cellsRemaining = 0;
+        for (Cell* cell : block->getCells()) {
+            if (cell->getRow() < 18) cellsRemaining++;
+        }
+        
+        if (cellsRemaining == 0) {
+            block->clearOldCells();
+            blockScore += block->getLevelGenerated();
+        }
+    }
+
+    return blockScore;
 }
+
 
 
 

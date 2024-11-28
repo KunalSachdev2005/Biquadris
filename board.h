@@ -5,7 +5,7 @@
 #include <queue>
 #include "direction.h"
 
-const int BOARD_ROWS = 21;
+const int BOARD_ROWS = 24;
 const int BOARD_COLS = 11;
 
 class Block; // Forward Declaration

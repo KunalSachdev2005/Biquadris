@@ -70,7 +70,7 @@ void TextDisplay::printCell(Cell* cell) {
 }
 
 void TextDisplay::printNextBlocks(Player* player1, Player* player2) {
-    for (int r = 18; r < 21; ++r) {
+    for (int r = 21; r < 24; ++r) {
         // Player 1 board rendering
         std::cout << "|";
         for (int c = 0; c < 11; ++c) {
