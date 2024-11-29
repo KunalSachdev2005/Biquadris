@@ -17,7 +17,7 @@ private:
     std::string name;          // Player's name
     Board board;               // The player's game board
     Score score;               // The player's score
-    std::unique_ptr<Level> level;              // Pointer to the current level
+    std::shared_ptr<Level> level;              // Pointer to the current level
     int blocksSinceClear;      // Blocks cleared since last reset
     bool isTurn;               // Whether it is the player's turn
     bool gameOver;             // Whether the game is over for this player
@@ -30,7 +30,7 @@ public:
     std::string getName() const;
     Board* getBoard();
     Score& getScore();
-    Level* getLevel() const;
+    std::shared_ptr<Level> getLevel() const;
     int getBlocksSinceClear() const;
     bool getIsTurn() const;
     bool isGameOver();

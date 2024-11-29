@@ -11,7 +11,9 @@ Player::Player(std::string playerName)
 std::string Player::getName() const { return name; }
 Board* Player::getBoard() { return &board; }
 Score& Player::getScore() { return score; }
-Level* Player::getLevel() const { return level; }
+std::shared_ptr<Level> Player::getLevel() const {
+    return std::make_shared<Level>(*level);  // Return a shared pointer by copying the level
+}
 int Player::getBlocksSinceClear() const { return blocksSinceClear; }
 bool Player::getIsTurn() const { return isTurn; }
 
