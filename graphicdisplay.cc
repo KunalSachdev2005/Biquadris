@@ -90,7 +90,7 @@ void GraphicDisplay::drawBoardWithGrid(Player* player, int offsetX, int offsetY,
     for (int r = 0; r < 18; ++r) {
         for (int c = 0; c < 11; ++c) {
             Cell* cell = player->getBoard()->at(r, c);
-            int currentColor = EMPTY;
+            int currentColor = XWindow::Color::Black;
 
             if (cell->isBlind()) {
                 currentColor = XWindow::Color::Black;

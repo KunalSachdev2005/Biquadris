@@ -99,7 +99,7 @@ void Game::start() {
                 int player1score = std::max(player1.getScore().getHighScore(), player1.getScore().getScore());
                 int player2score = std::max(player2.getScore().getHighScore(), player2.getScore().getScore());
 
-                Game game(player1.getName(), player2.getName(), startLevel, scriptFile1, scriptFile2, randomSeed, player1score, player2score);
+                Game game(player1.getName(), player2.getName(), startLevel, scriptFile1, scriptFile2, randomSeed, textMode, player1score, player2score);
                 game.start();
                 
                 // Exit the current game loop after restarting

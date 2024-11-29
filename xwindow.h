@@ -27,7 +27,7 @@ public:
     int getHeight() const;
 
     void fillRectangle(int x, int y, int width, int height, int colour = Black);
-    void drawString(int x, int y, std::string msg, int colour = White);
+    void drawString(int x, int y, std::string msg, int colour = White, const char* fontName = "-*-fixed-medium-r-normal--20-*-*-*-*-*-*-*");
     void drawLine(int x1, int y1, int x2, int y2, int colour = Black);
 };
 

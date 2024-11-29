@@ -62,10 +62,24 @@ void XWindow::fillRectangle(int x, int y, int width, int height, int colour) {
     XFlush(d);  // Ensure immediate rendering
 }
 
-void XWindow::drawString(int x, int y, std::string msg, int colour) {
+void XWindow::drawString(int x, int y, std::string msg, int colour, const char* fontName) {
     XSetForeground(d, gc, colours[colour]);
-    XDrawString(d, w, gc, x, y, msg.c_str(), msg.length());
-    XFlush(d);  // Ensure immediate rendering
+    // Load the specified font
+    XFontStruct* font = XLoadQueryFont(d, fontName);
+    
+    if (font) {
+        // Set the font for the graphics context
+        XSetFont(d, gc, font->fid);
+        
+        // Draw the string
+        XDrawString(d, w, gc, x, y, msg.c_str(), msg.length());
+        
+        // Free the font resource
+        XFreeFont(d, font);
+    } else {
+        // Fallback to default system font if specified font not found
+        XDrawString(d, w, gc, x, y, msg.c_str(), msg.length());
+    }
 }
 
 void XWindow::drawLine(int x1, int y1, int x2, int y2, int colour) {
