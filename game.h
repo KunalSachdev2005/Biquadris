@@ -52,7 +52,7 @@ public:
     Player* getPlayer2();
     int getStartLevel() const;
     int getSeed() const;
-    bool inTextMode() const {}
+    bool inTextMode() const;
 
     
     // Display methods
