@@ -30,7 +30,7 @@ public:
     std::string getName() const;
     Board* getBoard();
     Score& getScore();
-    std::shared_ptr<Level> getLevel() const;
+    Level* getLevel() const;
     int getBlocksSinceClear() const;
     bool getIsTurn() const;
     bool isGameOver();

@@ -137,19 +137,19 @@ void Game::switchTurns() {
 void Game::levelUp(Player* player) {
     int currentLevel = player->getLevel()->getLevel();
     if (currentLevel == 0) {
-        player->setLevel(new Level1(player));
+        player->setLevel(std::make_shared<Level1>(player));
         std::cout << player->getName() << " leveled up to Level 1!" << std::endl;
     }
     else if (currentLevel == 1) {
-        player->setLevel(new Level2(player));  // If at Level1, upgrade to Level2
+        player->setLevel(std::make_shared<Level2>(player));  // If at Level1, upgrade to Level2
         std::cout << player->getName() << " leveled up to Level 2!" << std::endl;
     } 
     else if (currentLevel == 2) {
-        player->setLevel(new Level3(player));  // If at Level2, upgrade to Level3
+        player->setLevel(std::make_shared<Level3>(player));  // If at Level2, upgrade to Level3
         std::cout << player->getName() << " leveled up to Level 3!" << std::endl;
     } 
     else if (currentLevel == 3) {
-        player->setLevel(new Level4(player));  // If at Level3, upgrade to Level4
+        player->setLevel(std::make_shared<Level4>(player));  // If at Level3, upgrade to Level4
         std::cout << player->getName() << " leveled up to Level 4!" << std::endl;
     } 
     else {
@@ -162,20 +162,20 @@ void Game::levelDown(Player* player) {
     int currentLevel = player->getLevel()->getLevel();
 
     if (currentLevel == 4) {
-        player->setLevel(new Level3(player));  // If at Level4, downgrade to Level3
+        player->setLevel(std::make_shared<Level3>(player));  // If at Level4, downgrade to Level3
         std::cout << player->getName() << " leveled down to Level 3!" << std::endl;
     } 
     else if (currentLevel == 3) {
-        player->setLevel(new Level2(player));  // If at Level3, downgrade to Level2
+        player->setLevel(std::make_shared<Level2>(player));  // If at Level3, downgrade to Level2
         std::cout << player->getName() << " leveled down to Level 2!" << std::endl;
     } 
     else if (currentLevel == 2) {
-        player->setLevel(new Level1(player));  // If at Level2, downgrade to Level1
+        player->setLevel(std::make_shared<Level1>(player));  // If at Level2, downgrade to Level1
         std::cout << player->getName() << " leveled down to Level 1!" << std::endl;
     } 
     else if (currentLevel == 1) {
         std::string file = player == &player1? scriptFile1 : scriptFile2;
-        player->setLevel(new Level0(file, player));  
+        player->setLevel(std::make_shared<Level0>(file, player));  
         std::cout << player->getName() << " leveled down to Level 0!" << std::endl;
     }
     else {
