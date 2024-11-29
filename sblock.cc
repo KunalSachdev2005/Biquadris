@@ -1,4 +1,4 @@
-#include "SBlock.h"
+#include "sblock.h"
 #include "board.h"
 #include "cell.h"
 
