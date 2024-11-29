@@ -15,7 +15,7 @@
 Game::Game(const std::string& player1Name, const std::string& player2Name, int startLevel, const std::string& scriptFile1,
             const std::string& scriptFile2, int randomSeed, bool textMode, int player1HighScore, int player2HighScore)
     : player1(player1Name), player2(player2Name),currentPlayer(&player1),textDisplay(this), scriptFile1(scriptFile1),
-    scriptFile2(scriptFile2), randomSeed(randomSeed), startLevel(startLevel), graphicDisplay(new GraphicDisplay(this)) {
+    scriptFile2(scriptFile2), textMode(textMode), randomSeed(randomSeed), startLevel(startLevel), graphicDisplay(new GraphicDisplay(this)) {
     player1.getScore().setHighScore(player1HighScore);
     player2.getScore().setHighScore(player2HighScore);
     initialize(startLevel, startLevel, player1HighScore, player2HighScore);
