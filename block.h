@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <utility>
+
 #include "type.h"
 #include "direction.h"
 
@@ -31,37 +32,29 @@ class Block { // Abstract Base Class
         void clearOldCells();
 
         // Accessor methods
-        Type getType() const;
-        bool isHeavy() const;
-        int getWeight() const;
-        int getLevelGenerated() const;
-        int getCurrentShapeIndex() const;
-        Cell* getBaseCell() const;
-        const std::vector<Cell*>& getCells() const;
-        const std::vector<std::pair<int, int>>& getShape() const;
-        void setShape(const std::vector<std::pair<int, int>>& newShape);
+        Type getType() const;                       // Getter for the block type
+        bool isHeavy() const;                       // Getter for the heavy attribute
+        int getWeight() const;                      // Getter for the weight of the block
+        int getLevelGenerated() const;              // Getter for the level at which the block was generated
+        int getCurrentShapeIndex() const;           // Getter for the current shape index
+        Cell* getBaseCell() const;                  // Getter for the base cell (top-left corner)
+        const std::vector<Cell*>& getCells() const; // Getter for the cells occupied by the block
+        const std::vector<std::pair<int, int>>& getShape() const; // Getter for the block's shape
 
-        // Set the base cell for the block (to update its position)
-        void setBaseCell(Cell* base);
+        // Mutator methods
+        void setShape(const std::vector<std::pair<int, int>>& newShape); // Setter for the block's shape
+        void setBaseCell(Cell* base);        // Setter for the base cell (to update its position)
+        void setHeavy(bool heavy);           // Setter for the heavy attribute
+        void setWeight(int weight);          // Setter for the weight of the block
 
-        // Place the block on the board
-        void placeOnBoard(Board& board);
+        // Block Management
+        void placeOnBoard(Board& board);     // Place the block on the board
+        void updateCells();                  // Update the cells occupied by the block, linking them to this block
 
-        // Update the cells occupied by the block, linking them to this block
-        void updateCells();
-
+        // Rotation-related methods
         void initializeRotations(const std::vector<std::vector<std::pair<int, int>>>& rotations); // Initialize rotations
-
-        const std::vector<std::vector<std::pair<int, int>>>& getRotationShapes() const;
-
-        // Rotate the block (using Direction)
-        void rotate(Direction direction);
-
-        // Setter for heavy attribute
-        void setHeavy(bool heavy);
-
-        // Setter for weight attribute
-        void setWeight(int weight);
+        const std::vector<std::vector<std::pair<int, int>>>& getRotationShapes() const;           // Getter for rotation shapes
+        void rotate(Direction direction);       // Rotate the block (using Direction)
 };
 
 #endif // BLOCK_H

@@ -1,17 +1,17 @@
-#include "board.h"
-#include "cell.h"
-#include "block.h"
 #include <iostream>
 #include <set>
 #include <map>
+
+#include "board.h"
+#include "cell.h"
+#include "block.h"
 
 const int BOARD_VALID_ROWS = 21;
 
 // Constructor: Initializes the board with a given number of rows and columns
 Board::Board()
-    : rowsCleared(0), currentBlock(nullptr), nextBlock(nullptr) {
+    : rowsCleared(0), currentBlock(nullptr), nextBlock(nullptr), blinded(false) {
 
-    blinded = false;
     // Initialize the grid with 21 rows and 11 columns (3 additional rows for the next block)
     grid.resize(rows, std::vector<Cell>(cols));
 
@@ -36,6 +36,15 @@ Block* Board::getNextBlock() {
     return nextBlock;
 }
 
+int Board::getRows() {
+    return rows;
+}
+
+int Board::getCols() {
+    return cols;
+}
+
+// Mutator methods
 bool Board::setCurrentBlock(Block* block) {
     if (block) {
         block->clearOldCells();
@@ -53,16 +62,17 @@ bool Board::setCurrentBlock(Block* block) {
         }
 
         currentBlock = block;
-        currentBlock->setBaseCell(at(3,0));
-    return true;
+        currentBlock->setBaseCell(at(3, 0));
     }
+    return true;
 }
 
 void Board::setNextBlock(Block* block) {
     nextBlock = block;
-    nextBlock->setBaseCell(at(23,0));
+    nextBlock->setBaseCell(at(23, 0));
 }
-    
+
+// Block Management
 bool Board::canMove(Block* block, Direction dir) {
     // Get the current position of the base cell of the block
     Cell* baseCell = block->getBaseCell();
@@ -86,7 +96,7 @@ bool Board::canMove(Block* block, Direction dir) {
         }
 
         // Check if the new position is out of bounds
-        if (newRow < 0 || newRow >= BOARD_VALID_ROWS-3 || newCol < 0 || newCol >= cols) {
+        if (newRow < 0 || newRow >= BOARD_VALID_ROWS - 3 || newCol < 0 || newCol >= cols) {
             return false;  // The move is out of bounds
         }
 
@@ -100,36 +110,6 @@ bool Board::canMove(Block* block, Direction dir) {
     // If all positions are valid, return true
     return true;
 }
-
-void Board::setBlinded(bool blind) {
-
-        blinded = blind;
-
-        if(blinded) {
-            for (int r = 3; r < 12; ++r) {
-                for (int c = 3; c < 9; ++c) {
-                    Cell* cell = at(r, c);
-                    // Mark this cell as "covered"
-                    cell->setBlind(true);
-                   
-                }
-            }
-        }
-        else {
-            for (int r = 3; r < 12; ++r) {
-                for (int c = 3; c < 9; ++c) {
-                    Cell* cell = at(r, c);
-                    cell->setBlind(false);
-                }
-            }
-        }
-}
-
-bool Board::isBlinded() const {
-        return blinded;
-}
-
-
 
 bool Board::canRotate(Block* block, Direction dir) {
     // Save the current shape and base cell of the block
@@ -153,7 +133,7 @@ bool Board::canRotate(Block* block, Direction dir) {
         int newCol = baseCell->getCol() + offset.second;
 
         // Check if the new position is within bounds
-        if (newRow < 0 || newRow >= BOARD_VALID_ROWS-3 || newCol < 0 || newCol >= cols) {
+        if (newRow < 0 || newRow >= BOARD_VALID_ROWS - 3 || newCol < 0 || newCol >= cols) {
             return false;  // Out of bounds
         }
 
@@ -167,7 +147,6 @@ bool Board::canRotate(Block* block, Direction dir) {
     // If no issues were found, the rotation is valid
     return true;
 }
-
 
 void Board::moveBlock(Block* block, Direction dir) {
     // Capture the original base cell and shape before moving
@@ -205,40 +184,29 @@ void Board::moveBlock(Block* block, Direction dir) {
     block->placeOnBoard(*this);
 }
 
-
 void Board::rotateBlock(Block* block, Direction dir) {
-        block->rotate(dir);
+    block->rotate(dir);
 }
 
 void Board::dropBlock(Block* block) {
-
-
     // Get the current position of the base cell
     Cell* baseCell = block->getBaseCell();
     int originalRow = baseCell->getRow();
     int originalCol = baseCell->getCol();
 
     // Try to move the block down as far as possible
-    int dropCount = 0;
     while (canMove(block, Direction::Down)) {
         moveBlock(block, Direction::Down);
-        dropCount++;
-        
     }
 
-    
-
     // After the block has dropped to the lowest position, finalize the block's position
-    block->placeOnBoard(*this);  // Final placement on the board
-    
-    
-    
+    block->placeOnBoard(*this);
+
     // Important: set currentBlock to nullptr after dropping
     currentBlock = nullptr;
-    
-    
 }
 
+// Row Management
 bool Board::isRowFull(int row) {
     // Check if the row is full
     for (int col = 0; col < cols; ++col) {
@@ -280,7 +248,7 @@ int Board::clearRow(int row) {
         for (Cell* cell : block->getCells()) {
             if (cell->getRow() < 18) cellsRemaining++;
         }
-        
+
         if (cellsRemaining == 0) {
             block->clearOldCells();
             blockScore += block->getLevelGenerated();
@@ -290,9 +258,7 @@ int Board::clearRow(int row) {
     return blockScore;
 }
 
-
-
-
+// Utility methods
 Cell* Board::at(int row, int col) {
     // Return the cell at (row, col)
     if (row >= 0 && row < rows && col >= 0 && col < cols) {
@@ -301,6 +267,20 @@ Cell* Board::at(int row, int col) {
     return nullptr;  // Out of bounds
 }
 
-int Board::getRows() { return rows; }
+void Board::setBlinded(bool blind) {
+    blinded = blind;
 
-int Board::getCols() { return cols; }
+    int startRow = 3, endRow = 12;
+    int startCol = 3, endCol = 9;
+
+    for (int r = startRow; r < endRow; ++r) {
+        for (int c = startCol; c < endCol; ++c) {
+            Cell* cell = at(r, c);
+            cell->setBlind(blind);
+        }
+    }
+}
+
+bool Board::isBlinded() const {
+    return blinded;
+}

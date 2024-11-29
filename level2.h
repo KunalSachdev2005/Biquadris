@@ -5,10 +5,14 @@
 
 class Level2 : public Level {
 public:
-    Level2(Player* player, int seed = 0); // Constructor
-    ~Level2(); // Destructor
+    // Constructor
+    Level2(Player* player, int seed = 0);
 
-    Block* generateBlock() override; // Generates blocks with equal probability
+    // Destructor
+    ~Level2();
+
+    // Override the generateBlock method for Level2
+    Block* generateBlock() override;
 };
 
 #endif // LEVEL2_H

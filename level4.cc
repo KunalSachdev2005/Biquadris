@@ -1,5 +1,7 @@
 #include "level4.h"
 
+const int HEAVY_WEIGHT = 1;
+
 // Constructor for Level 4
 Level4::Level4(Player* player, int seed) : Level(4, player) {
     // Seed random number generator for block generation
@@ -20,6 +22,7 @@ Level4::~Level4() {
 void Level4::setSequenceMode(const std::string& filePath) {
     isRandom = false;
 
+    // Clear the sequence queue
     while (!sequenceQueue.empty()) {
     sequenceQueue.pop();
     }
@@ -27,12 +30,14 @@ void Level4::setSequenceMode(const std::string& filePath) {
     if (sequenceFile.is_open()) {
         sequenceFile.close();
     }
+    // Open the sequence file
     sequenceFile.open(filePath);
     if (!sequenceFile) {
         throw std::runtime_error("Failed to open sequence file: " + filePath);
     }
 }
 
+// Set the game mode to random mode
 void Level4::setRandomMode() {
     isRandom = true;
     if (sequenceFile.is_open()) {
@@ -69,6 +74,7 @@ Block* Level4::generateBlock() {
 // Helper to create block from type
 Block* Level4::createBlockFromType(const std::string& type) {
     Cell* baseCell = player->getBoard()->at(20, 0);
+
     if (type == "I") return new IBlock(level, baseCell);
     if (type == "J") return new JBlock(level, baseCell);
     if (type == "L") return new LBlock(level, baseCell);
@@ -76,10 +82,11 @@ Block* Level4::createBlockFromType(const std::string& type) {
     if (type == "S") return new SBlock(level, baseCell);
     if (type == "Z") return new ZBlock(level, baseCell);
     if (type == "T") return new TBlock(level, baseCell);
+
     throw std::runtime_error("Invalid block type in sequence: " + type);
 }
 
-// Helper to generate random block
+// Helper to generate random block (with skewed probabilities)
 Block* Level4::randomBlock() {
     // Get the base cell for the new block
     Cell* baseCell = player->getBoard()->at(20, 0); // Row 20, Column 0
@@ -106,7 +113,7 @@ Block* Level4::randomBlock() {
 
     // All blocks in Level 4 are heavy
     block->setHeavy(true);
-    block->setWeight(1);
+    block->setWeight(HEAVY_WEIGHT);
 
     return block;
 }

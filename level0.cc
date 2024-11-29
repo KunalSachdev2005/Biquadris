@@ -1,6 +1,8 @@
 #include "level0.h"
 
-Level0::Level0(const std::string& fileName, Player* player) : Level(0, player), currentIndex(0) {
+// Constructor for Level0
+Level0::Level0(const std::string& fileName, Player* player) 
+    : Level(0, player), currentIndex(0) {
     file.open(fileName);
     if (!file) {
         throw std::runtime_error("Unable to open script file: " + fileName);
@@ -23,14 +25,14 @@ Level0::~Level0() {
 
 // Override generateBlock method
 Block* Level0::generateBlock() {
-    // if (blockSequence.empty()) {
-    //     throw std::runtime_error("No blocks available in sequence.");
-    // }
+    if (blockSequence.empty()) {
+        throw std::runtime_error("No blocks available in sequence.");
+    }
     
     std::string blockType = blockSequence[currentIndex];
     currentIndex = (currentIndex + 1) % blockSequence.size(); // Loop back to the start once blocks are over
 
-    Cell* baseCell = player->getBoard()->at(20, 0);
+    Cell* baseCell = player->getBoard()->at(20, 0); // Gets the base cell for the block
 
     if (blockType == "I") return new IBlock(level, baseCell);
     if (blockType == "J") return new JBlock(level, baseCell);
@@ -40,5 +42,5 @@ Block* Level0::generateBlock() {
     if (blockType == "Z") return new ZBlock(level, baseCell);
     if (blockType == "T") return new TBlock(level, baseCell);
     
-    // throw std::runtime_error("Unknown block type: " + blockType);
+    throw std::runtime_error("Unknown block type: " + blockType);
 }

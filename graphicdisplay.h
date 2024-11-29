@@ -1,13 +1,15 @@
 #ifndef GRAPHICDISPLAY_H
 #define GRAPHICDISPLAY_H
 
-#include "xwindow.h"
-#include "game.h"
 #include <vector>
 #include <unordered_map>
 
+#include "xwindow.h"
+#include "game.h"
+
 class GraphicDisplay {
 private:
+    // Game and window objects
     XWindow* window;
     Game* game;
 
@@ -22,7 +24,7 @@ private:
     static constexpr int BOARD2_OFFSET_Y = 100;
     static constexpr int TEXT_MARGIN = 20;
 
-    // Color mapping
+    // Block color mapping
     enum BlockColors {
         EMPTY = XWindow::Color::White,
         I_BLOCK = XWindow::Color::Cyan,
@@ -54,6 +56,7 @@ private:
     void drawNextBlockSection(Player* player, int offsetX, int offsetY);
 
 public:
+    // Constructor and destructor
     GraphicDisplay(Game* game);
     ~GraphicDisplay();
 

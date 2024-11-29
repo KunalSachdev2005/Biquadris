@@ -1,9 +1,10 @@
-#include "xwindow.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <cstdlib>
 #include <unistd.h>
 #include <iostream>
+
+#include "xwindow.h"
 
 XWindow::XWindow(int width, int height) : width(width), height(height) {
     d = XOpenDisplay(NULL);
@@ -44,14 +45,17 @@ XWindow::XWindow(int width, int height) : width(width), height(height) {
     sleep(1);
 }
 
+// Destructor
 XWindow::~XWindow() {
     XFreeGC(d, gc);
     XCloseDisplay(d);
 }
 
+// Getter methods
 int XWindow::getWidth() const { return width; }
 int XWindow::getHeight() const { return height; }
 
+// Drawing methods
 void XWindow::fillRectangle(int x, int y, int width, int height, int colour) {
     XSetForeground(d, gc, colours[colour]);
     XFillRectangle(d, w, gc, x, y, width, height);

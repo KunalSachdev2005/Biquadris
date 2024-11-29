@@ -4,4 +4,4 @@ Level::Level(int levelNumber, Player* player) : level(levelNumber), player(playe
 
 Level::~Level() {}
 
-int Level::getLevel() { return level;}
+int Level::getLevel() { return level; }

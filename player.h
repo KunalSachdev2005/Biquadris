@@ -2,30 +2,31 @@
 #define PLAYER_H
 
 #include <string>
+
 #include "board.h"
 #include "score.h"
 #include "level.h"
 
+// Forward Declaration
 class SpecialAction;
-
 class Level;
 
 class Player {
 private:
-    std::string name;
-    Board board;
-    Score score;
-    Level* level;
-    int blocksSinceClear;
-    bool isTurn;
-    bool gameOver;
+    std::string name;          // Player's name
+    Board board;               // The player's game board
+    Score score;               // The player's score
+    Level* level;              // Pointer to the current level
+    int blocksSinceClear;      // Blocks cleared since last reset
+    bool isTurn;               // Whether it is the player's turn
+    bool gameOver;             // Whether the game is over for this player
 
 public:
-    // Constructors
+    // Constructors and Destructor
     Player(std::string playerName = "Player");
     ~Player();
 
-    // Getters
+    // Getters (Accessors)
     std::string getName() const;
     Board* getBoard();
     Score& getScore();
@@ -34,7 +35,7 @@ public:
     bool getIsTurn() const;
     bool isGameOver();
 
-    // Setters
+    // Setters (Mutators)
     void setName(const std::string& newName);
     void setLevel(Level* newLevel);
     void setIsTurn(bool turn);

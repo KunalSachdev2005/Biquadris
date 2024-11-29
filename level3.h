@@ -7,20 +7,26 @@
 
 class Level3 : public Level {
 private:
-    bool isRandom = true; // Determines if the level is random
-    std::queue<std::string> sequenceQueue; // Queue for sequence mode
-    std::ifstream sequenceFile; // Input file for sequence mode
+    bool isRandom = true;                       // Determines if the level is random
+    std::queue<std::string> sequenceQueue;      // Queue for sequence mode
+    std::ifstream sequenceFile;                 // Input file stream for sequence mode
 
-    Block* createBlockFromType(const std::string& type); // Helper for sequence blocks
-    Block* randomBlock(); // Helper for random blocks
+    // Helper method to create a Block from a specific type
+    Block* createBlockFromType(const std::string& type);
+
+    // Helper method to generate a random block
+    Block* randomBlock();
     
 public:
-    Level3(Player* player, int seed = 0); // Constructor
-    ~Level3(); // Destructor
+    // Constructor
+    Level3(Player* player, int seed = 0);
 
-    Block* generateBlock() override; // Generates blocks with skewed probabilities for Level 3
-    void setSequenceMode(const std::string& filePath) override; // Switch to sequence mode
-    void setRandomMode() override; // Switch to random mode
+    // Destructor
+    ~Level3();
+
+    Block* generateBlock() override;                            // Generates blocks with skewed probabilities for Level 3
+    void setSequenceMode(const std::string& filePath) override; // Switch to sequence mode using a given file path to load sequence
+    void setRandomMode() override;                              // Switch to random mode
 };
 
 #endif // LEVEL3_H

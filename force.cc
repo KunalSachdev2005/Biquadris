@@ -1,10 +1,12 @@
-#include "force.h"
 #include <iostream>
+#include "force.h"
 
 void Force::execute() {
     // Change the opponent's current block to the forced block type
     opponent->getBoard()->getCurrentBlock()->clearOldCells();
     Block* forcedBlock;
+    
+    // Determine which block type to force
     switch (type) 
     {
         case Type::I: forcedBlock = new IBlock(opponent->getLevel()->getLevel(), opponent->getBoard()->at(3,0)); break;
@@ -17,5 +19,7 @@ void Force::execute() {
         default: forcedBlock = new IBlock(opponent->getLevel()->getLevel(), opponent->getBoard()->at(3,0));
     }
    
-    if(!opponent->getBoard()->setCurrentBlock(forcedBlock)) opponent->setGameOver();
+    if (!opponent->getBoard()->setCurrentBlock(forcedBlock)) {
+        opponent->setGameOver();
+    }
 }

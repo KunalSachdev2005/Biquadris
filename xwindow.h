@@ -2,7 +2,9 @@
 #define __XWINDOW_H__
 
 #include <X11/Xlib.h>
-#include "string"
+#include <string>
+
+const int NUM_COLOURS = 10;
 
 class XWindow {
 private:
@@ -10,14 +12,17 @@ private:
     Window w;
     int s;
     GC gc;
-    unsigned long colours[10];
+    unsigned long colours[NUM_COLOURS];
     int width, height;
 
 public:
     enum Color { White = 0, Black, Red, Green, Blue, Cyan, Magenta, Yellow, Orange, Brown };
+    
+    // Constructor and Destructor
     XWindow(int width = 800, int height = 500);
     ~XWindow();
 
+    // Public methods to interact with the window
     int getWidth() const;
     int getHeight() const;
 

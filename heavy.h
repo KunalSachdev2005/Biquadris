@@ -1,4 +1,3 @@
-// heavy.h
 #ifndef HEAVY_H
 #define HEAVY_H
 
@@ -6,8 +5,10 @@
 
 class Heavy : public SpecialAction {
 public:
-    Heavy(Player* player, Player* opponent) : SpecialAction(player, opponent) {}
+    // Constructor
+    Heavy(Player* player, Player* opponent);
 
+    // Override execute function
     void execute() override;
 };
 

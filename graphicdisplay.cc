@@ -13,6 +13,7 @@ GraphicDisplay::~GraphicDisplay() {
     delete window;
 }
 
+// Helper method for rendering
 int GraphicDisplay::getColorForBlockType(Type blockType) {
     switch(blockType) {
         case Type::I: return I_BLOCK;
@@ -119,53 +120,6 @@ void GraphicDisplay::drawBoardWithGrid(Player* player, int offsetX, int offsetY,
     }
 }
 
-
-void GraphicDisplay::drawTextInfo(Player* player1, Player* player2) {
-    // Player 1 Info
-    if (player1->getLevel()->getLevel() != previousPlayer1Level ||
-        player1->getScore().getScore() != previousPlayer1Score ||
-        player1->getScore().getHighScore() != previousPlayer1HighScore) {
-        
-        // Clear previous text area with black background
-        window->fillRectangle(0, 0, WINDOW_WIDTH / 2, 100, XWindow::Color::Black);
-        
-        std::string levelStr = "Level: " + std::to_string(player1->getLevel()->getLevel());
-        std::string scoreStr = "Score: " + std::to_string(player1->getScore().getScore());
-        std::string highScoreStr = "High Score: " + std::to_string(player1->getScore().getHighScore());
-        
-        window->drawString(TEXT_MARGIN, 30, levelStr, XWindow::Color::White);
-        window->drawString(TEXT_MARGIN, 50, scoreStr, XWindow::Color::White);
-        window->drawString(TEXT_MARGIN, 70, highScoreStr, XWindow::Color::White);
-
-        // Update previous values
-        previousPlayer1Level = player1->getLevel()->getLevel();
-        previousPlayer1Score = player1->getScore().getScore();
-        previousPlayer1HighScore = player1->getScore().getHighScore();
-    }
-
-    // Player 2 Info (similar to Player 1)
-    if (player2->getLevel()->getLevel() != previousPlayer2Level ||
-        player2->getScore().getScore() != previousPlayer2Score ||
-        player2->getScore().getHighScore() != previousPlayer2HighScore) {
-        
-        // Clear previous text area with black background
-        window->fillRectangle(WINDOW_WIDTH / 2, 0, WINDOW_WIDTH / 2, 100, XWindow::Color::Black);
-        
-        std::string levelStr = "Level: " + std::to_string(player2->getLevel()->getLevel());
-        std::string scoreStr = "Score: " + std::to_string(player2->getScore().getScore());
-        std::string highScoreStr = "High Score: " + std::to_string(player2->getScore().getHighScore());
-        
-        window->drawString(WINDOW_WIDTH / 2 + TEXT_MARGIN, 30, levelStr, XWindow::Color::White);
-        window->drawString(WINDOW_WIDTH / 2 + TEXT_MARGIN, 50, scoreStr, XWindow::Color::White);
-        window->drawString(WINDOW_WIDTH / 2 + TEXT_MARGIN, 70, highScoreStr, XWindow::Color::White);
-
-        // Update previous values
-        previousPlayer2Level = player2->getLevel()->getLevel();
-        previousPlayer2Score = player2->getScore().getScore();
-        previousPlayer2HighScore = player2->getScore().getHighScore();
-    }
-}
-
 void GraphicDisplay::drawNextBlock(Player* player, int offsetX, int offsetY) {
     // Clear the next block preview area first
     window->fillRectangle(
@@ -197,31 +151,6 @@ void GraphicDisplay::drawNextBlock(Player* player, int offsetX, int offsetY) {
             }
         }
     }
-}
-
-void GraphicDisplay::update() {
-    Player* player1 = game->getPlayer1();
-    Player* player2 = game->getPlayer2();
-
-    // Set background to black
-    window->fillRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, XWindow::Color::Black);
-
-    // Draw board with grid for both players, regardless of turn
-    drawBoardWithGrid(player1, BOARD_OFFSET_X, BOARD1_OFFSET_Y, previousPlayer1Board);
-    drawBoardWithGrid(player2, WINDOW_WIDTH - BOARD_OFFSET_X - BOARD_WIDTH, BOARD2_OFFSET_Y, previousPlayer2Board);
-
-    // Draw text information with White color for visibility
-    window->drawString(TEXT_MARGIN, 30, "Level: " + std::to_string(player1->getLevel()->getLevel()), XWindow::Color::White);
-    window->drawString(TEXT_MARGIN, 50, "Score: " + std::to_string(player1->getScore().getScore()), XWindow::Color::White);
-    window->drawString(TEXT_MARGIN, 70, "High Score: " + std::to_string(player1->getScore().getHighScore()), XWindow::Color::White);
-
-    window->drawString(WINDOW_WIDTH / 2 + TEXT_MARGIN, 30, "Level: " + std::to_string(player2->getLevel()->getLevel()), XWindow::Color::White);
-    window->drawString(WINDOW_WIDTH / 2 + TEXT_MARGIN, 50, "Score: " + std::to_string(player2->getScore().getScore()), XWindow::Color::White);
-    window->drawString(WINDOW_WIDTH / 2 + TEXT_MARGIN, 70, "High Score: " + std::to_string(player2->getScore().getHighScore()), XWindow::Color::White);
-
-    // Draw next block previews in a separate section
-    drawNextBlockSection(player1, BOARD_OFFSET_X, BOARD1_OFFSET_Y + BOARD_HEIGHT + 20);
-    drawNextBlockSection(player2, WINDOW_WIDTH - BOARD_OFFSET_X - BOARD_WIDTH, BOARD2_OFFSET_Y + BOARD_HEIGHT + 20);
 }
 
 void GraphicDisplay::drawNextBlockSection(Player* player, int offsetX, int offsetY) {
@@ -271,5 +200,76 @@ void GraphicDisplay::drawNextBlockSection(Player* player, int offsetX, int offse
                 }
             }
         }
+    }
+}
+
+void GraphicDisplay::update() {
+    Player* player1 = game->getPlayer1();
+    Player* player2 = game->getPlayer2();
+
+    // Set background to black
+    window->fillRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, XWindow::Color::Black);
+
+    // Draw board with grid for both players, regardless of turn
+    drawBoardWithGrid(player1, BOARD_OFFSET_X, BOARD1_OFFSET_Y, previousPlayer1Board);
+    drawBoardWithGrid(player2, WINDOW_WIDTH - BOARD_OFFSET_X - BOARD_WIDTH, BOARD2_OFFSET_Y, previousPlayer2Board);
+
+    // Draw text information with White color for visibility
+    window->drawString(TEXT_MARGIN, 30, "Level: " + std::to_string(player1->getLevel()->getLevel()), XWindow::Color::White);
+    window->drawString(TEXT_MARGIN, 50, "Score: " + std::to_string(player1->getScore().getScore()), XWindow::Color::White);
+    window->drawString(TEXT_MARGIN, 70, "High Score: " + std::to_string(player1->getScore().getHighScore()), XWindow::Color::White);
+
+    window->drawString(WINDOW_WIDTH / 2 + TEXT_MARGIN, 30, "Level: " + std::to_string(player2->getLevel()->getLevel()), XWindow::Color::White);
+    window->drawString(WINDOW_WIDTH / 2 + TEXT_MARGIN, 50, "Score: " + std::to_string(player2->getScore().getScore()), XWindow::Color::White);
+    window->drawString(WINDOW_WIDTH / 2 + TEXT_MARGIN, 70, "High Score: " + std::to_string(player2->getScore().getHighScore()), XWindow::Color::White);
+
+    // Draw next block previews in a separate section
+    drawNextBlockSection(player1, BOARD_OFFSET_X, BOARD1_OFFSET_Y + BOARD_HEIGHT + 20);
+    drawNextBlockSection(player2, WINDOW_WIDTH - BOARD_OFFSET_X - BOARD_WIDTH, BOARD2_OFFSET_Y + BOARD_HEIGHT + 20);
+}
+
+void GraphicDisplay::drawTextInfo(Player* player1, Player* player2) {
+    // Player 1 Info
+    if (player1->getLevel()->getLevel() != previousPlayer1Level ||
+        player1->getScore().getScore() != previousPlayer1Score ||
+        player1->getScore().getHighScore() != previousPlayer1HighScore) {
+        
+        // Clear previous text area with black background
+        window->fillRectangle(0, 0, WINDOW_WIDTH / 2, 100, XWindow::Color::Black);
+        
+        std::string levelStr = "Level: " + std::to_string(player1->getLevel()->getLevel());
+        std::string scoreStr = "Score: " + std::to_string(player1->getScore().getScore());
+        std::string highScoreStr = "High Score: " + std::to_string(player1->getScore().getHighScore());
+        
+        window->drawString(TEXT_MARGIN, 30, levelStr, XWindow::Color::White);
+        window->drawString(TEXT_MARGIN, 50, scoreStr, XWindow::Color::White);
+        window->drawString(TEXT_MARGIN, 70, highScoreStr, XWindow::Color::White);
+
+        // Update previous values
+        previousPlayer1Level = player1->getLevel()->getLevel();
+        previousPlayer1Score = player1->getScore().getScore();
+        previousPlayer1HighScore = player1->getScore().getHighScore();
+    }
+
+    // Player 2 Info (similar to Player 1)
+    if (player2->getLevel()->getLevel() != previousPlayer2Level ||
+        player2->getScore().getScore() != previousPlayer2Score ||
+        player2->getScore().getHighScore() != previousPlayer2HighScore) {
+        
+        // Clear previous text area with black background
+        window->fillRectangle(WINDOW_WIDTH / 2, 0, WINDOW_WIDTH / 2, 100, XWindow::Color::Black);
+        
+        std::string levelStr = "Level: " + std::to_string(player2->getLevel()->getLevel());
+        std::string scoreStr = "Score: " + std::to_string(player2->getScore().getScore());
+        std::string highScoreStr = "High Score: " + std::to_string(player2->getScore().getHighScore());
+        
+        window->drawString(WINDOW_WIDTH / 2 + TEXT_MARGIN, 30, levelStr, XWindow::Color::White);
+        window->drawString(WINDOW_WIDTH / 2 + TEXT_MARGIN, 50, scoreStr, XWindow::Color::White);
+        window->drawString(WINDOW_WIDTH / 2 + TEXT_MARGIN, 70, highScoreStr, XWindow::Color::White);
+
+        // Update previous values
+        previousPlayer2Level = player2->getLevel()->getLevel();
+        previousPlayer2Score = player2->getScore().getScore();
+        previousPlayer2HighScore = player2->getScore().getHighScore();
     }
 }

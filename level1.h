@@ -5,10 +5,14 @@
 
 class Level1 : public Level {
 public:
-    Level1(Player* player, int seed = 0); // Constructor
-    ~Level1() override; // Destructor
+    // Constructor: Initializes Level1 with the player and an optional seed
+    Level1(Player* player, int seed = 0); 
+    
+    // Destructor
+    ~Level1() override; 
 
-    Block* generateBlock() override; // Generate block for Level 1
+    // Override the generateBlock method for Level1
+    Block* generateBlock() override; 
 };
 
 #endif // LEVEL1_H

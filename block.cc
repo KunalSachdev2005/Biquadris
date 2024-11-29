@@ -1,8 +1,9 @@
+#include <iostream>
+
 #include "block.h"
 #include "cell.h"
 #include "direction.h"
 #include "board.h"
-#include <iostream>
 
 const int DEFAULT_WEIGHT = 0;
 
@@ -35,27 +36,27 @@ int Block::getLevelGenerated() const {
     return levelGenerated;
 }
 
-const std::vector<Cell*>& Block::getCells() const {
-    return cells;
+int Block::getCurrentShapeIndex() const {
+    return currentShapeIndex;
 }
 
 Cell* Block::getBaseCell() const {
     return baseCell;
 }
 
+const std::vector<Cell*>& Block::getCells() const {
+    return cells;
+}
+
 const std::vector<std::pair<int, int>>& Block::getShape() const {
     return shape;
 }
 
-void Block::clearOldCells() {
-    for (Cell* cell : cells) {
-        if (cell) {
-            cell->setBlock(nullptr);  // Clear the block from the cell
-        }
-    }
-    cells.clear();  // Reset the cells vector
+const std::vector<std::vector<std::pair<int, int>>>& Block::getRotationShapes() const {
+    return rotations;
 }
 
+// Mutator methods
 void Block::setShape(const std::vector<std::pair<int, int>>& newShape) {
     // Clear old cells associated with the block
     clearOldCells();
@@ -69,25 +70,37 @@ void Block::setShape(const std::vector<std::pair<int, int>>& newShape) {
     }
 }
 
-// Set base cell
 void Block::setBaseCell(Cell* base) {
     clearOldCells();
     baseCell = base;
     placeOnBoard(base->getBoard());  // Recalculate block's position when base is set
 }
 
-// Place the block on the board based on the base cell and shape offsets
-void Block::placeOnBoard(Board& board) {
-    
+void Block::setHeavy(bool heavy) {
+    this->heavy = heavy;
+}
 
+void Block::setWeight(int weight) {
+    this->weight = weight;
+}
+
+// Utility methods
+void Block::clearOldCells() {
+    for (Cell* cell : cells) {
+        if (cell) {
+            cell->setBlock(nullptr);  // Clear the block from the cell
+        }
+    }
+    cells.clear();  // Reset the cells vector
+}
+
+void Block::placeOnBoard(Board& board) {
     cells.clear();  // Clear any previously set cells
 
     // Loop through each offset in the shape
     for (const auto& offset : shape) {
         int new_row = baseCell->getRow() - offset.first;  
         int new_col = baseCell->getCol() + offset.second; 
-
-       
 
         // Ensure the new position is within bounds
         if (new_row >= 0 && new_row < board.getRows() && new_col >= 0 && new_col < board.getCols()) {
@@ -104,17 +117,15 @@ void Block::placeOnBoard(Board& board) {
 
     // After placing the block on the board, update all its cells
     updateCells();
-    
-   
 }
 
-// Update the cells occupied by the block, linking them to this block
 void Block::updateCells() {
     for (Cell* cell : cells) {
         cell->setBlock(this);  // Set the block pointer in each cell
     }
 }
 
+// Rotation-related methods
 void Block::initializeRotations(const std::vector<std::vector<std::pair<int, int>>>& rotations) {
     this->rotations = rotations;
 }
@@ -143,22 +154,4 @@ void Block::rotate(Direction dir) {
 
     // Reposition the block on the board
     placeOnBoard(board);
-}
-
-const std::vector<std::vector<std::pair<int, int>>>& Block::getRotationShapes() const {
-    return rotations;
-}
-
-// Setter for heavy attribute
-void Block::setHeavy(bool heavy) {
-    this->heavy = heavy;
-}
-
-// Setter for weight attribute
-void Block::setWeight(int weight) {
-    this->weight = weight;
-}
-
-int Block::getCurrentShapeIndex() const {
-    return currentShapeIndex;
 }

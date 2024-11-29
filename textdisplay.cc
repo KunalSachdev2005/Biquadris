@@ -1,10 +1,13 @@
-#include "textdisplay.h"
-#include "game.h"
 #include <iostream>
 #include <iomanip>
 
+#include "textdisplay.h"
+#include "game.h"
+
+// Constructor for TextDisplay
 TextDisplay::TextDisplay(Game* game) : game(game) {}
 
+// Public method to update the display
 void TextDisplay::update() {
     Player* player1 = game->getPlayer1();
     Player* player2 = game->getPlayer2();
@@ -31,8 +34,6 @@ void TextDisplay::update() {
             <<  player2->getScore().getHighScore() 
             << std::endl;
 
-             
-
     // Print boards side by side (first 18 rows)
     printSideBySideBoards(player1, player2);
 
@@ -45,6 +46,7 @@ void TextDisplay::update() {
     std::cout << std::string(38, '-') << std::endl;
 }
 
+// Private method to print side-by-side boards (first 18 rows)
 void TextDisplay::printSideBySideBoards(Player* player1, Player* player2) {
     std::cout << "+-----------+" << std::string(5, ' ') << "||" << std::string(5, ' ') << "+-----------+" << std::endl;
     for (int r = 0; r < 18; ++r) {
@@ -72,19 +74,7 @@ void TextDisplay::printSideBySideBoards(Player* player1, Player* player2) {
     std::cout << "+-----------+" << std::string(5, ' ') << "||" << std::string(5, ' ') << "+-----------+" << std::endl;
 }
 
-void TextDisplay::printCell(Cell* cell) {
-    if (cell->isBlind()) {
-        std::cout << "?";
-    }
-    else if (!cell || !cell->isOccupied()) {
-        std::cout << " ";
-    } else {
-        Block* block = cell->getBlock();
-        char ch = getBlockTypeChar(block);
-        std::cout << ch;
-    } 
-}
-
+// Private method to print the "next" blocks for both players
 void TextDisplay::printNextBlocks(Player* player1, Player* player2) {
     std::cout << "|Next:      |"  << std::string(5, ' ') << "||" << std::string(5, ' ') << "|Next:      |" << std::endl;
     for (int r = 21; r < 24; ++r) {
@@ -109,6 +99,22 @@ void TextDisplay::printNextBlocks(Player* player1, Player* player2) {
     }
     std::cout << "*-----------*" << std::string(5, ' ') << "||" << std::string(5, ' ') << "*-----------*" << std::endl;   
 }
+
+// Private method to print the visual representation of a cell
+void TextDisplay::printCell(Cell* cell) {
+    if (cell->isBlind()) {
+        std::cout << "?";
+    }
+    else if (!cell || !cell->isOccupied()) {
+        std::cout << " ";
+    } else {
+        Block* block = cell->getBlock();
+        char ch = getBlockTypeChar(block);
+        std::cout << ch;
+    } 
+}
+
+// Private helper function to return the character representation of a block type
 char TextDisplay::getBlockTypeChar(Block* block) {
     if (!block) return ' ';
     switch(block->getType()) {

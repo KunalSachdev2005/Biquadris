@@ -1,6 +1,5 @@
-#include "specialblock.h"
 #include "board.h"
-#include "cell.h"
+#include "specialblock.h"
 
 // Constructor: Initializes the SBlock at a given level and base cell
 SPBlock::SPBlock(Cell* baseCell)
