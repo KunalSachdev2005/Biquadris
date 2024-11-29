@@ -1,8 +1,12 @@
 #ifndef TEXTDISPLAY_H
 #define TEXTDISPLAY_H
 
+#include "game.h"
+
 // Forward declaration
 class Game;
+class Player;
+class Cell;
 
 class TextDisplay {
 private:

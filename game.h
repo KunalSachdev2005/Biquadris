@@ -15,6 +15,7 @@
 
 // Forward declarations
 class GraphicDisplay;
+class TextDisplay;
 
 // Class definition
 class Game {
@@ -24,7 +25,7 @@ private:
     Player player2;
     Player* currentPlayer;
     CommandInterpreter commandInterpreter;
-    TextDisplay textDisplay;
+    TextDisplay* textDisplay;
     GraphicDisplay* graphicDisplay;
     std::string scriptFile1;
     std::string scriptFile2;

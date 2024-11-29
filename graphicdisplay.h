@@ -7,6 +7,8 @@
 #include "xwindow.h"
 #include "game.h"
 
+class Game;
+
 class GraphicDisplay {
 private:
     // Game and window objects
