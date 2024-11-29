@@ -1,4 +1,4 @@
-#include "graphic_display.h"
+#include "graphicdisplay.h"
 #include <string>
 
 GraphicDisplay::GraphicDisplay(Game* game) : game(game) {
@@ -34,7 +34,7 @@ void GraphicDisplay::drawBoard(Player* player, int offsetX, int offsetY, std::ve
             int currentColor = EMPTY;
 
             if (cell->isBlind()) {
-                currentColor = Black;
+                currentColor = XWindow::Color::Black;
             } else if (cell->isOccupied()) {
                 Block* block = cell->getBlock();
                 currentColor = getColorForBlockType(block->getType());
@@ -62,7 +62,7 @@ void GraphicDisplay::drawTextInfo(Player* player1, Player* player2) {
         player1->getScore().getHighScore() != previousPlayer1HighScore) {
         
         // Clear previous text area
-        window->fillRectangle(0, 0, WINDOW_WIDTH / 2, 100, White);
+        window->fillRectangle(0, 0, WINDOW_WIDTH / 2, 100, XWindow::Color::White);
         
         std::string levelStr = "Level: " + std::to_string(player1->getLevel()->getLevel());
         std::string scoreStr = "Score: " + std::to_string(player1->getScore().getScore());
@@ -84,7 +84,7 @@ void GraphicDisplay::drawTextInfo(Player* player1, Player* player2) {
         player2->getScore().getHighScore() != previousPlayer2HighScore) {
         
         // Clear previous text area
-        window->fillRectangle(WINDOW_WIDTH / 2, 0, WINDOW_WIDTH / 2, 100, White);
+        window->fillRectangle(WINDOW_WIDTH / 2, 0, WINDOW_WIDTH / 2, 100, XWindow::Color::White);
         
         std::string levelStr = "Level: " + std::to_string(player2->getLevel()->getLevel());
         std::string scoreStr = "Score: " + std::to_string(player2->getScore().getScore());
@@ -130,8 +130,8 @@ void GraphicDisplay::update() {
     Player* player2 = game->getPlayer2();
 
     // Draw board backgrounds
-    window->fillRectangle(BOARD_OFFSET_X, BOARD1_OFFSET_Y, BOARD_WIDTH, BOARD_HEIGHT, White);
-    window->fillRectangle(WINDOW_WIDTH - BOARD_OFFSET_X - BOARD_WIDTH, BOARD2_OFFSET_Y, BOARD_WIDTH, BOARD_HEIGHT, White);
+    window->fillRectangle(BOARD_OFFSET_X, BOARD1_OFFSET_Y, BOARD_WIDTH, BOARD_HEIGHT, XWindow::Color::White);
+    window->fillRectangle(WINDOW_WIDTH - BOARD_OFFSET_X - BOARD_WIDTH, BOARD2_OFFSET_Y, BOARD_WIDTH, BOARD_HEIGHT, XWindow::Color::White);
 
     // Draw boards with differential rendering
     drawBoard(player1, BOARD_OFFSET_X, BOARD1_OFFSET_Y, previousPlayer1Board);

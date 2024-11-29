@@ -24,15 +24,15 @@ private:
 
     // Color mapping
     enum BlockColors {
-        EMPTY = White,
-        I_BLOCK = Cyan,
-        J_BLOCK = Blue,
-        L_BLOCK = Orange,
-        O_BLOCK = Yellow,
-        S_BLOCK = Green,
-        Z_BLOCK = Red,
-        T_BLOCK = Magenta,
-        SP_BLOCK = Brown
+        EMPTY = XWindow::Color::White,
+        I_BLOCK = XWindow::Color::Cyan,
+        J_BLOCK = XWindow::Color::Blue,
+        L_BLOCK = XWindow::Color::Orange,
+        O_BLOCK = XWindow::Color::Yellow,
+        S_BLOCK = XWindow::Color::Green,
+        Z_BLOCK = XWindow::Color::Red,
+        T_BLOCK = XWindow::Color::Magenta,
+        SP_BLOCK = XWindow::Color::Brown
     };
 
     // Track previous state to minimize redrawing
@@ -94,7 +94,7 @@ void GraphicDisplay::drawBoard(Player* player, int offsetX, int offsetY, std::ve
             int currentColor = EMPTY;
 
             if (cell->isBlind()) {
-                currentColor = Black;
+                currentColor = XWindow::Color::Black;
             } else if (cell->isOccupied()) {
                 Block* block = cell->getBlock();
                 currentColor = getColorForBlockType(block->getType());
@@ -122,7 +122,7 @@ void GraphicDisplay::drawTextInfo(Player* player1, Player* player2) {
         player1->getScore().getHighScore() != previousPlayer1HighScore) {
         
         // Clear previous text area
-        window->fillRectangle(0, 0, WINDOW_WIDTH / 2, 100, White);
+        window->fillRectangle(0, 0, WINDOW_WIDTH / 2, 100, XWindow::Color::White);
         
         std::string levelStr = "Level: " + std::to_string(player1->getLevel()->getLevel());
         std::string scoreStr = "Score: " + std::to_string(player1->getScore().getScore());
@@ -144,7 +144,7 @@ void GraphicDisplay::drawTextInfo(Player* player1, Player* player2) {
         player2->getScore().getHighScore() != previousPlayer2HighScore) {
         
         // Clear previous text area
-        window->fillRectangle(WINDOW_WIDTH / 2, 0, WINDOW_WIDTH / 2, 100, White);
+        window->fillRectangle(WINDOW_WIDTH / 2, 0, WINDOW_WIDTH / 2, 100, XWindow::Color::White);
         
         std::string levelStr = "Level: " + std::to_string(player2->getLevel()->getLevel());
         std::string scoreStr = "Score: " + std::to_string(player2->getScore().getScore());
@@ -190,8 +190,8 @@ void GraphicDisplay::update() {
     Player* player2 = game->getPlayer2();
 
     // Draw board backgrounds
-    window->fillRectangle(BOARD_OFFSET_X, BOARD1_OFFSET_Y, BOARD_WIDTH, BOARD_HEIGHT, White);
-    window->fillRectangle(WINDOW_WIDTH - BOARD_OFFSET_X - BOARD_WIDTH, BOARD2_OFFSET_Y, BOARD_WIDTH, BOARD_HEIGHT, White);
+    window->fillRectangle(BOARD_OFFSET_X, BOARD1_OFFSET_Y, BOARD_WIDTH, BOARD_HEIGHT, XWindow::Color::White);
+    window->fillRectangle(WINDOW_WIDTH - BOARD_OFFSET_X - BOARD_WIDTH, BOARD2_OFFSET_Y, BOARD_WIDTH, BOARD_HEIGHT, XWindow::Color::White);
 
     // Draw boards with differential rendering
     drawBoard(player1, BOARD_OFFSET_X, BOARD1_OFFSET_Y, previousPlayer1Board);
