@@ -7,10 +7,10 @@
         "C:/cygwin64/usr/include",
         "C:/cygwin64/usr/include/X11"
       ],
-      "compilerPath": "C:/cygwin64/bin/gcc.exe",
+      "compilerPath": "C:/MinGW/bin/gcc.exe",
       "cStandard": "${default}",
       "cppStandard": "${default}",
-      "intelliSenseMode": "cygwin64-gcc-x64", //"windows-gcc-x64"
+      "intelliSenseMode": "windows-gcc-x64",
       "compilerArgs": [
         ""
       ]

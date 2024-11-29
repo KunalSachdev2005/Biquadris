@@ -11,6 +11,8 @@
 #include "level3.h"
 #include "level4.h"
 
+class GraphicDisplay;
+
 class Game {
 private:
     Player player1;
@@ -61,6 +63,7 @@ public:
     void levelDown(Player* player);
 
     void applySpecialAction(SpecialAction* action);
+    ~Game();
 };
 
 #endif // GAME_H
