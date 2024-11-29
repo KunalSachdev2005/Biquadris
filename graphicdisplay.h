@@ -13,7 +13,7 @@ private:
 
     // Screen layout constants
     static constexpr int WINDOW_WIDTH = 800;
-    static constexpr int WINDOW_HEIGHT = 600;
+    static constexpr int WINDOW_HEIGHT = 1000;
     static constexpr int BOARD_WIDTH = 330;
     static constexpr int BOARD_HEIGHT = 540;
     static constexpr int CELL_SIZE = 30;
@@ -50,6 +50,8 @@ private:
     void drawBoard(Player* player, int offsetX, int offsetY, std::vector<std::vector<int>>& previousBoard);
     void drawTextInfo(Player* player1, Player* player2);
     void drawNextBlock(Player* player, int offsetX, int offsetY);
+    void drawBoardWithGrid(Player* player, int offsetX, int offsetY, std::vector<std::vector<int>>& previousBoard);
+    void drawNextBlockSection(Player* player, int offsetX, int offsetY);
 
 public:
     GraphicDisplay(Game* game);
@@ -58,4 +60,4 @@ public:
     void update();
 };
 
-#endif // GRAPHIC_DISPLAY_H
+#endif // GRAPHICDISPLAY_H

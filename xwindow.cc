@@ -41,7 +41,7 @@ XWindow::XWindow(int width, int height) : width(width), height(height) {
     XSetNormalHints(d, w, &hints);
 
     XSynchronize(d, True);
-    usleep(1000);
+    sleep(1);
 }
 
 XWindow::~XWindow() {
@@ -55,16 +55,17 @@ int XWindow::getHeight() const { return height; }
 void XWindow::fillRectangle(int x, int y, int width, int height, int colour) {
     XSetForeground(d, gc, colours[colour]);
     XFillRectangle(d, w, gc, x, y, width, height);
-    XSetForeground(d, gc, colours[Black]);
+    XFlush(d);  // Ensure immediate rendering
 }
 
-void XWindow::drawString(int x, int y, std::string msg) {
+void XWindow::drawString(int x, int y, std::string msg, int colour) {
+    XSetForeground(d, gc, colours[colour]);
     XDrawString(d, w, gc, x, y, msg.c_str(), msg.length());
+    XFlush(d);  // Ensure immediate rendering
 }
 
 void XWindow::drawLine(int x1, int y1, int x2, int y2, int colour) {
-    XSetForeground(d, gc, colours[colour]); // Set the desired color
-    XDrawLine(d, w, gc, x1, y1, x2, y2);    // Draw the line
-    XSetForeground(d, gc, colours[Black]);  // Reset to default color
-    //XDrawLine(d, w, gc, x1, y1, x2, y2);
+    XSetForeground(d, gc, colours[colour]);
+    XDrawLine(d, w, gc, x1, y1, x2, y2);
+    XFlush(d);  // Ensure immediate rendering
 }
