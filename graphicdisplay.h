@@ -6,6 +6,8 @@
 #include <vector>
 #include <unordered_map>
 
+class Game;
+
 class GraphicDisplay {
 private:
     XWindow* window;
