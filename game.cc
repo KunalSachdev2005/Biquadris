@@ -73,7 +73,7 @@ void Game::initialize(int player1Level, int player2Level, int player1HighScore, 
     player2.getBoard()->setNextBlock(player2.generateNextBlock());
 }
 
-bool Game::textMode() const {return textMode; }
+bool Game::inTextMode() const {return textMode; }
 int Game::getStartLevel() const{ return startLevel; }
 
 int Game::getSeed() const { return randomSeed;}
