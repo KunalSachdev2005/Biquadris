@@ -37,7 +37,7 @@ public:
 
     // Setters (Mutators)
     void setName(const std::string& newName);
-    void setLevel(std::unique_ptr<Level> newLevel);
+    void setLevel(std::shared_ptr<Level> newLevel);
     void setIsTurn(bool turn);
     void setGameOver();
 

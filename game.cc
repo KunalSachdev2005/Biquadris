@@ -37,21 +37,21 @@ void Game::initialize(int player1Level, int player2Level, int player1HighScore, 
 
     // Dynamically set levels for both players
     switch (player1Level) {
-        case 0: player1.setLevel(std::make_unique<Level0>(scriptFile1, &player1)); break;
-        case 1: player1.setLevel(std::make_unique<Level1>(&player1)); break;
-        case 2: player1.setLevel(std::make_unique<Level2>(&player1)); break;
-        case 3: player1.setLevel(std::make_unique<Level3>(&player1)); break;
-        case 4: player1.setLevel(std::make_unique<Level4>(&player1)); break;
+        case 0: player1.setLevel(std::make_shared<Level0>(scriptFile1, &player1)); break;
+        case 1: player1.setLevel(std::make_shared<Level1>(&player1)); break;
+        case 2: player1.setLevel(std::make_shared<Level2>(&player1)); break;
+        case 3: player1.setLevel(std::make_shared<Level3>(&player1)); break;
+        case 4: player1.setLevel(std::make_shared<Level4>(&player1)); break;
         default:
             throw std::invalid_argument("Invalid level for player 1.");
     }
 
-     switch (player2Level) {
-        case 0: player2.setLevel(std::make_unique<Level0>(scriptFile2, &player2)); break;
-        case 1: player2.setLevel(std::make_unique<Level1>(&player2)); break;
-        case 2: player2.setLevel(std::make_unique<Level2>(&player2)); break;
-        case 3: player2.setLevel(std::make_unique<Level3>(&player2)); break;
-        case 4: player2.setLevel(std::make_unique<Level4>(&player2)); break;
+    switch (player2Level) {
+        case 0: player2.setLevel(std::make_shared<Level0>(scriptFile2, &player2)); break;
+        case 1: player2.setLevel(std::make_shared<Level1>(&player2)); break;
+        case 2: player2.setLevel(std::make_shared<Level2>(&player2)); break;
+        case 3: player2.setLevel(std::make_shared<Level3>(&player2)); break;
+        case 4: player2.setLevel(std::make_shared<Level4>(&player2)); break;
         default:
             throw std::invalid_argument("Invalid level for player 2.");
     }

@@ -19,7 +19,7 @@ bool Player::getIsTurn() const { return isTurn; }
 
 // Setters
 void Player::setName(const std::string& newName) { name = newName; }
-void Player::setLevel(std::unique_ptr<Level> newLevel) { 
+void Player::setLevel(std::shared_ptr<Level> newLevel) { 
     level = std::move(newLevel);
 }
 void Player::setIsTurn(bool turn) { isTurn = turn; }
