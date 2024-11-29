@@ -150,6 +150,7 @@ void Game::levelUp(Player* player) {
     } 
     else if (currentLevel == 3) {
         player->setLevel(std::make_shared<Level4>(player));  // If at Level3, upgrade to Level4
+        player->setBlocksSinceClear(0);
         std::cout << player->getName() << " leveled up to Level 4!" << std::endl;
     } 
     else {
@@ -328,12 +329,13 @@ void Game::checkGameState() {
     int blockScore = 0;
     for (int row = 0; row < 21; ++row) {
         if (currentPlayer->getBoard()->isRowFull(row)) {
-            ++rowsCleared;            
+            ++rowsCleared;
             blockScore += currentPlayer->getBoard()->clearRow(row);
         }
     }
+
     if (rowsCleared > 0) {
-        currentPlayer->getScore().addScore(blockScore + (rowsCleared + currentPlayer->getLevel()->getLevel())* (rowsCleared + currentPlayer->getLevel()->getLevel()));  // Adjust scoring as needed
+        currentPlayer->getScore().addScore(blockScore + (rowsCleared + currentPlayer->getLevel()->getLevel()) * (rowsCleared + currentPlayer->getLevel()->getLevel()));
     }
     else if (currentPlayer->getLevel()->getLevel() >= 4) {
         // Check if the drop counter triggers a special block
@@ -344,34 +346,38 @@ void Game::checkGameState() {
         }
     }
 
-    if(rowsCleared > 0) {
+    if (rowsCleared > 0) {
         std::cout << "Special action triggered! Choose your action (blind, heavy, force): ";
-            std::string actionChoice;
-            std::cin >> actionChoice;
+        std::string actionChoice;
+        std::cin >> actionChoice;
 
-            SpecialAction* action = nullptr;
-            if (actionChoice == "blind") {
-                action = new Blind(currentPlayer, getOpponentPlayer());
-            } else if (actionChoice == "heavy") {
-                action = new Heavy(currentPlayer, getOpponentPlayer());
-            } else if (actionChoice == "force") {
-                std::cout << "Choose block type for force action (I, J, L, O, S, T, Z): ";
-                char blockTypeChar;
-                std::cin >> blockTypeChar;
-                Type blockType = charToType(blockTypeChar); // Implement charToType to convert char to Type enum
-                action = new Force(currentPlayer, getOpponentPlayer(), blockType);
-            } 
+        // Use unique_ptr to manage the special action memory
+        std::unique_ptr<SpecialAction> action;
 
-            if (action) {
-                applySpecialAction(action);
-                delete action;
-            }
+        if (actionChoice == "blind") {
+            action = std::make_unique<Blind>(currentPlayer, getOpponentPlayer());
+        } else if (actionChoice == "heavy") {
+            action = std::make_unique<Heavy>(currentPlayer, getOpponentPlayer());
+        } else if (actionChoice == "force") {
+            std::cout << "Choose block type for force action (I, J, L, O, S, T, Z): ";
+            char blockTypeChar;
+            std::cin >> blockTypeChar;
+            Type blockType = charToType(blockTypeChar);
+            action = std::make_unique<Force>(currentPlayer, getOpponentPlayer(), blockType);
+        }
+
+        if (action) {
+            applySpecialAction(action.get());
+            // No need to manually delete - unique_ptr will handle cleanup
+        }
     }
 
     // Check if current player needs a new block
     if (!currentPlayer->getBoard()->getCurrentBlock()) {
         Block* newBlock = currentPlayer->generateNextBlock();
-        if(!currentPlayer->getBoard()->setCurrentBlock(currentPlayer->getBoard()->getNextBlock())) currentPlayer->setGameOver();
+        if (!currentPlayer->getBoard()->setCurrentBlock(currentPlayer->getBoard()->getNextBlock())) {
+            currentPlayer->setGameOver();
+        }
         currentPlayer->getBoard()->setNextBlock(newBlock);
     }
 }
