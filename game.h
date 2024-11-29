@@ -2,8 +2,9 @@
 #define GAME_H
 
 #include "player.h"
-#include "commandinterpreter.h"  // Assuming you'll create this
-#include "textdisplay.h"  // Assuming you'll create this
+#include "commandinterpreter.h"  
+#include "textdisplay.h"  
+#include "graphicdisplay.h"
 #include "level0.h"
 #include "level1.h"
 #include "level2.h"
@@ -17,6 +18,7 @@ private:
     Player* currentPlayer;
     CommandInterpreter commandInterpreter;
     TextDisplay textDisplay;
+    GraphicDisplay* graphicDisplay;
     std::string scriptFile1;
     std::string scriptFile2;
     int randomSeed;
