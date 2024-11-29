@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
         //std::cin >> player2Level;
 
         // Create the game object
-        Game game(player1Name, player2Name, startLevel, scriptFile1, scriptFile2, seed);
+        Game game(player1Name, player2Name, startLevel, scriptFile1, scriptFile2, seed, textMode);
 
         // Start the game
         game.start();

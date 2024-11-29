@@ -25,11 +25,12 @@ private:
     std::string scriptFile2;
     int randomSeed;
     int startLevel;
+    bool textMode;
 
 public:
     // Constructors
     Game(const std::string& player1Name, const std::string& player2Name, int startLevel, const std::string& scriptFile1 = "sequence1.txt", 
-        const std::string& scriptFile2 = "sequence2.txt", int randomSeed = 0, int player1HighScore=0, int player2HighScore=0);
+        const std::string& scriptFile2 = "sequence2.txt", int randomSeed = 0, bool textMode = false, int player1HighScore=0, int player2HighScore=0);
     
     // Game management methods
     void initialize(int player1Level, int player2Level, int player1HighScore, int player2HighScore);
@@ -51,6 +52,7 @@ public:
     Player* getPlayer2();
     int getStartLevel() const;
     int getSeed() const;
+    bool inTextMode() const {}
 
     
     // Display methods
