@@ -12,7 +12,7 @@ class Game;
 class GraphicDisplay {
 private:
     // Game and window objects
-    XWindow* window;
+    std::unique_ptr<XWindow> window;
     Game* game;
 
     // Screen layout constants
@@ -60,7 +60,6 @@ private:
 public:
     // Constructor and destructor
     GraphicDisplay(Game* game);
-    ~GraphicDisplay();
 
     void update();
 };

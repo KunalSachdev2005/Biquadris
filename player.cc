@@ -7,11 +7,6 @@ Player::Player(std::string playerName)
     // Default level might be set elsewhere or through a setter
 }
 
-// Destructor
-Player::~Player() {
-    delete level;  // Clean up dynamically allocated level
-}
-
 // Getters
 std::string Player::getName() const { return name; }
 Board* Player::getBoard() { return &board; }
@@ -22,9 +17,8 @@ bool Player::getIsTurn() const { return isTurn; }
 
 // Setters
 void Player::setName(const std::string& newName) { name = newName; }
-void Player::setLevel(Level* newLevel) { 
-    delete level;  // Clean up existing level
-    level = newLevel; 
+void Player::setLevel(std::unique_ptr<Level> newLevel) { 
+    level = std::move(newLevel);
 }
 void Player::setIsTurn(bool turn) { isTurn = turn; }
 

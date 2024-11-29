@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <string>
+#include <memory>
 
 #include "player.h"
 #include "commandinterpreter.h"
@@ -25,8 +26,8 @@ private:
     Player player2;
     Player* currentPlayer;
     CommandInterpreter commandInterpreter;
-    TextDisplay* textDisplay;
-    GraphicDisplay* graphicDisplay;
+    std::unique_ptr<TextDisplay> textDisplay;
+    std::unique_ptr<GraphicDisplay> graphicDisplay;
     std::string scriptFile1;
     std::string scriptFile2;
     int randomSeed;
@@ -73,9 +74,6 @@ public:
 
     // Special action methods
     void applySpecialAction(SpecialAction* action);
-
-    // Destructor
-    ~Game();
 };
 
 #endif // GAME_H

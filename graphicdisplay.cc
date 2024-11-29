@@ -1,16 +1,13 @@
 #include "graphicdisplay.h"
 #include <string>
+#include <memory>
 
 GraphicDisplay::GraphicDisplay(Game* game) : game(game) {
-    window = new XWindow(WINDOW_WIDTH, WINDOW_HEIGHT);
+    window = std::make_unique<XWindow>(WINDOW_WIDTH, WINDOW_HEIGHT);
     
     // Initialize previous board states
     previousPlayer1Board.resize(18, std::vector<int>(11, EMPTY));
     previousPlayer2Board.resize(18, std::vector<int>(11, EMPTY));
-}
-
-GraphicDisplay::~GraphicDisplay() {
-    delete window;
 }
 
 // Helper method for rendering

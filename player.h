@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <string>
+#include <memory>
 
 #include "board.h"
 #include "score.h"
@@ -16,7 +17,7 @@ private:
     std::string name;          // Player's name
     Board board;               // The player's game board
     Score score;               // The player's score
-    Level* level;              // Pointer to the current level
+    std::unique_ptr<Level> level;              // Pointer to the current level
     int blocksSinceClear;      // Blocks cleared since last reset
     bool isTurn;               // Whether it is the player's turn
     bool gameOver;             // Whether the game is over for this player
@@ -24,7 +25,6 @@ private:
 public:
     // Constructors and Destructor
     Player(std::string playerName = "Player");
-    ~Player();
 
     // Getters (Accessors)
     std::string getName() const;
@@ -37,7 +37,7 @@ public:
 
     // Setters (Mutators)
     void setName(const std::string& newName);
-    void setLevel(Level* newLevel);
+    void setLevel(std::unique_ptr<Level> newLevel);
     void setIsTurn(bool turn);
     void setGameOver();
 
