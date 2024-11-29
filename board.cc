@@ -36,21 +36,26 @@ Block* Board::getNextBlock() {
     return nextBlock;
 }
 
-void Board::setCurrentBlock(Block* block) {
+bool Board::setCurrentBlock(Block* block) {
     if (block) {
-    // Clear the cells previously occupied by the block
-    for (const auto& offset : block->getShape()) {
-        int row = block->getBaseCell()->getRow() - offset.first;
-        int col = block->getBaseCell()->getCol() + offset.second;
+        block->clearOldCells();
 
-        Cell* cell = at(row, col);
-        if (cell) {
-            cell->setBlock(nullptr);
-            }   
+        // Game over check: Check if the cells for the new block are already occupied
+        for (const auto& offset : block->getShape()) {
+            int row = 3 - offset.first;  // Using the initial row where blocks are placed
+            int col = 0 + offset.second;
+
+            Cell* cell = at(row, col);
+            if (cell && cell->isOccupied()) {
+                // Game over condition: block cannot be placed
+                return false;
+            }
         }
+
+        currentBlock = block;
+        currentBlock->setBaseCell(at(3,0));
+    return true;
     }
-    currentBlock = block;
-    currentBlock->setBaseCell(at(3,0));
 }
 
 void Board::setNextBlock(Block* block) {

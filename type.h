@@ -8,7 +8,8 @@ enum class Type {
     O,  // O-shaped block
     S,  // S-shaped block
     T,  // T-shaped block
-    Z   // Z-shaped block
+    Z,   // Z-shaped block
+    SP
 };
 
 #endif // TYPE_H

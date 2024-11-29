@@ -15,10 +15,10 @@ private:
     std::string name;
     Board board;
     Score score;
-    Score highScore;
     Level* level;
-    int turns;
+    int blocksSinceClear;
     bool isTurn;
+    bool gameOver;
 
 public:
     // Constructors
@@ -29,22 +29,24 @@ public:
     std::string getName() const;
     Board* getBoard();
     Score& getScore();
-    Score& getHighScore();
     Level* getLevel() const;
-    int getTurns() const;
+    int getBlocksSinceClear() const;
     bool getIsTurn() const;
+    bool isGameOver();
 
     // Setters
     void setName(const std::string& newName);
     void setLevel(Level* newLevel);
     void setIsTurn(bool turn);
+    void setGameOver();
 
     // Game-related methods
-    void incrementTurns();
-    void updateHighScore();
+    void incrementTurn();
     void resetTurn();
     Block* generateNextBlock();
     void applySpecialAction(SpecialAction* action);
+
+    void setBlocksSinceClear(int i);
 };
 
 #endif // PLAYER_H

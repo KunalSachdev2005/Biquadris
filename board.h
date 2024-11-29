@@ -34,7 +34,7 @@ public:
     int getRows();
     int getCols();
     Block* getCurrentBlock();
-    void setCurrentBlock(Block* block);
+    bool setCurrentBlock(Block* block);
     Block* getNextBlock();
     void setNextBlock(Block* block);
     Block* createBlock();

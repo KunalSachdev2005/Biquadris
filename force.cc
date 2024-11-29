@@ -17,5 +17,5 @@ void Force::execute() {
         default: forcedBlock = new IBlock(opponent->getLevel()->getLevel(), opponent->getBoard()->at(3,0));
     }
    
-    opponent->getBoard()->setCurrentBlock(forcedBlock);
+    if(!opponent->getBoard()->setCurrentBlock(forcedBlock)) opponent->setGameOver();
 }

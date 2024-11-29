@@ -9,16 +9,19 @@
 #include "blind.h"
 #include "force.h"
 #include "heavy.h"
+#include "specialblock.h"
 
 // Constructor
 Game::Game(const std::string& player1Name, const std::string& player2Name, int startLevel, const std::string& scriptFile1,
-            const std::string& scriptFile2, int randomSeed)
-    : player1(player1Name), player2(player2Name),currentPlayer(&player1), gameOver(false), textDisplay(this), scriptFile1(scriptFile1),
-    scriptFile2(scriptFile2), randomSeed(randomSeed) {
-    initialize(startLevel, startLevel);
+            const std::string& scriptFile2, int randomSeed, int player1HighScore, int player2HighScore)
+    : player1(player1Name), player2(player2Name),currentPlayer(&player1),textDisplay(this), scriptFile1(scriptFile1),
+    scriptFile2(scriptFile2), randomSeed(randomSeed), startLevel(startLevel) {
+    player1.getScore().setHighScore(player1HighScore);
+    player2.getScore().setHighScore(player2HighScore);
+    initialize(startLevel, startLevel, player1HighScore, player2HighScore);
 }
 
-void Game::initialize(int player1Level, int player2Level) {
+void Game::initialize(int player1Level, int player2Level, int player1HighScore, int player2HighScore) {
     // Reset player turns
     player1.resetTurn();
     player2.resetTurn();
@@ -32,7 +35,7 @@ void Game::initialize(int player1Level, int player2Level) {
 
     // Dynamically set levels for both players
     switch (player1Level) {
-        //case 0: player1.setLevel(new Level0(&player1)); break;
+        case 0: player1.setLevel(new Level0(scriptFile1, &player1)); break;
         case 1: player1.setLevel(new Level1(&player1)); break;
         case 2: player1.setLevel(new Level2(&player1)); break;
         case 3: player1.setLevel(new Level3(&player1)); break;
@@ -42,7 +45,7 @@ void Game::initialize(int player1Level, int player2Level) {
     }
 
     switch (player2Level) {
-        //case 0: player2.setLevel(new Level0(&player2)); break;
+        case 0: player2.setLevel(new Level0(scriptFile2, &player2)); break;
         case 1: player2.setLevel(new Level1(&player2)); break;
         case 2: player2.setLevel(new Level2(&player2)); break;
         case 3: player2.setLevel(new Level3(&player2)); break;
@@ -66,25 +69,46 @@ void Game::initialize(int player1Level, int player2Level) {
     player2.getBoard()->setNextBlock(player2.generateNextBlock());
 }
 
+int Game::getStartLevel() const{ return startLevel; }
+
+int Game::getSeed() const { return randomSeed;}
 
 void Game::start() {
+    bool gameActive = true;
     
-    while (!gameOver) {
-        updateDisplay();
+    while (gameActive) {
+        // Check if the game is ongoing or just ended
+        if (!player1.isGameOver() && !player2.isGameOver()) {
+            updateDisplay();
+            std::cout << currentPlayer->getName() << "'s turn: ";
+        } else {
+            handleGameOver();
+            std::cout << "Game ended. Enter 'restart' or 'quit' to continue: ";
+        }
 
         std::string command;
-        std::cout << currentPlayer->getName() << "'s turn: ";
         std::getline(std::cin, command);
 
         try {
-            processCommand(command);
-            checkGameState();
+            if (command == "quit") {
+                gameActive = false;
+            } else if (command == "restart") {
+                int player1score = std::max(player1.getScore().getHighScore(), player1.getScore().getScore());
+                int player2score = std::max(player2.getScore().getHighScore(), player2.getScore().getScore());
+
+                Game game(player1.getName(), player2.getName(), startLevel, scriptFile1, scriptFile2, randomSeed, player1score, player2score);
+                game.start();
+                
+                // Exit the current game loop after restarting
+                gameActive = false;
+            } else if (!player1.isGameOver() && !player2.isGameOver()) {
+                processCommand(command);
+                checkGameState();
+            }
         } catch (const std::exception& e) {
             std::cerr << "Error: " << e.what() << std::endl;
         }
     }
-
-    handleGameOver();
 }
 
 int extractNumber(const std::string& command) {
@@ -101,14 +125,6 @@ int extractNumber(const std::string& command) {
 }
 
 void Game::switchTurns() {
-    currentPlayer->incrementTurns();
-
-    if (currentPlayer->getTurns() > 30) {
-        std::cout << currentPlayer->getName() << " has exceeded the turn limit. Game Over!\n";
-        gameOver = true;
-        return;  // Exit to prevent further turn switching
-    }
-
     player1.setIsTurn(!player1.getIsTurn());
     player2.setIsTurn(!player2.getIsTurn());
     
@@ -117,8 +133,11 @@ void Game::switchTurns() {
 
 void Game::levelUp(Player* player) {
     int currentLevel = player->getLevel()->getLevel();
-
-    if (currentLevel == 1) {
+    if (currentLevel == 0) {
+        player->setLevel(new Level1(player));
+        std::cout << player->getName() << " leveled up to Level 1!" << std::endl;
+    }
+    else if (currentLevel == 1) {
         player->setLevel(new Level2(player));  // If at Level1, upgrade to Level2
         std::cout << player->getName() << " leveled up to Level 2!" << std::endl;
     } 
@@ -151,6 +170,11 @@ void Game::levelDown(Player* player) {
         player->setLevel(new Level1(player));  // If at Level2, downgrade to Level1
         std::cout << player->getName() << " leveled down to Level 1!" << std::endl;
     } 
+    else if (currentLevel == 1) {
+        std::string file = player == &player1? scriptFile1 : scriptFile2;
+        player->setLevel(new Level0(file, player));  
+        std::cout << player->getName() << " leveled down to Level 0!" << std::endl;
+    }
     else {
         std::cout << player->getName() << " is already at the lowest level!" << std::endl;
     }
@@ -200,6 +224,7 @@ void Game::processCommand(const std::string& command) {
     }
     else if (interpretedCommand == "I" || interpretedCommand == "J" || interpretedCommand == "L" || interpretedCommand == "O" || 
              interpretedCommand == "S" || interpretedCommand == "Z" || interpretedCommand == "T") {
+                currentBoard->getCurrentBlock()->clearOldCells();
                 Cell* baseCell = currentBoard->at(3, 0);
                 Block* newBlock = nullptr;
                 int level = currentPlayer->getLevel()->getLevel();
@@ -266,6 +291,7 @@ void Game::processCommand(const std::string& command) {
     }
     else if (interpretedCommand == "drop") {
         currentBoard->dropBlock(currentBlock);
+        currentPlayer->incrementTurn();
         currentBoard->setBlinded(false);
         checkGameState();
         switchTurns();
@@ -280,8 +306,18 @@ void Game::processCommand(const std::string& command) {
             levelDown(currentPlayer);
         }
     }
+    else if (interpretedCommand == "restart") {
+            int player1score = std::max(player1.getScore().getHighScore(), player1.getScore().getScore());
+            int player2score = std::max(player2.getScore().getHighScore(), player2.getScore().getScore());
+
+            Game game(player1.getName(), player2.getName(), startLevel, scriptFile1, scriptFile2, randomSeed, player1score, player2score);
+
+            game.start();
+
+        }
+    }
     // Add more command handlers as needed
-}
+
 
 void Game::checkGameState() {
     // Check for completed rows
@@ -293,7 +329,17 @@ void Game::checkGameState() {
             blockScore += currentPlayer->getBoard()->clearRow(row);
         }
     }
-    if (rowsCleared > 0) currentPlayer->getScore().addScore(blockScore + (rowsCleared + currentPlayer->getLevel()->getLevel())* (rowsCleared + currentPlayer->getLevel()->getLevel()));  // Adjust scoring as needed
+    if (rowsCleared > 0) {
+        currentPlayer->getScore().addScore(blockScore + (rowsCleared + currentPlayer->getLevel()->getLevel())* (rowsCleared + currentPlayer->getLevel()->getLevel()));  // Adjust scoring as needed
+    }
+    else if (currentPlayer->getLevel()->getLevel() >= 4) {
+        // Check if the drop counter triggers a special block
+        int blocksDropped = currentPlayer->getBlocksSinceClear();
+        if (blocksDropped == 5) {
+            dropSpecialBlock(currentPlayer);
+            currentPlayer->setBlocksSinceClear(0);
+        }
+    }
 
     if(rowsCleared > 0) {
         std::cout << "Special action triggered! Choose your action (blind, heavy, force): ";
@@ -322,9 +368,15 @@ void Game::checkGameState() {
     // Check if current player needs a new block
     if (!currentPlayer->getBoard()->getCurrentBlock()) {
         Block* newBlock = currentPlayer->generateNextBlock();
-        currentPlayer->getBoard()->setCurrentBlock(currentPlayer->getBoard()->getNextBlock());
+        if(!currentPlayer->getBoard()->setCurrentBlock(currentPlayer->getBoard()->getNextBlock())) currentPlayer->setGameOver();
         currentPlayer->getBoard()->setNextBlock(newBlock);
     }
+}
+
+void Game::dropSpecialBlock(Player* p) {
+    Board* b = p->getBoard();
+    Block* newBlock = b->at(0,5)->isOccupied()? nullptr : new SPBlock(b->at(0,5));
+    b->dropBlock(newBlock);
 }
 
 void Game::applySpecialAction(SpecialAction* action) {
@@ -346,8 +398,24 @@ Type Game::charToType(char ch) {
 
 void Game::handleGameOver() {
     std::cout << "Game Over!" << std::endl;
+
+    // Determine the winner
+    int player1Score = player1.getScore().getScore();
+    int player2Score = player2.getScore().getScore();
+
+    if (player1.isGameOver() && player2.isGameOver()) {
+        std::cout << "It's a tie!" << std::endl;
+    } else if (player1.isGameOver()) {
+        std::cout << player2.getName() << " wins with a score of " << player2Score << "!" << std::endl;
+    } else if (player2.isGameOver()) {
+        std::cout << player1.getName() << " wins with a score of " << player1Score << "!" << std::endl;
+    }
+
+    // Print final scores and high scores
     updateDisplay();
 }
+
+
 
 Player* Game::getCurrentPlayer() {
     return currentPlayer;
@@ -363,10 +431,6 @@ Player* Game::getPlayer1() {
 
 Player* Game::getPlayer2() {
     return &player2;
-}
-
-bool Game::isGameOver() const {
-    return gameOver;
 }
 
 void Game::updateDisplay() {

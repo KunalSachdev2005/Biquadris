@@ -2,13 +2,25 @@
 #define LEVEL4_H
 
 #include "level.h"
+#include <fstream>
+#include <queue>
 
 class Level4 : public Level {
+private:
+    bool isRandom = true; // Determines if the level is random
+    std::queue<std::string> sequenceQueue; // Queue for sequence mode
+    std::ifstream sequenceFile; // Input file for sequence mode
+
+    Block* createBlockFromType(const std::string& type); // Helper for sequence blocks
+    Block* randomBlock(); // Helper for random blocks
+    
 public:
-    Level4(Player* player); // Constructor
+    Level4(Player* player, int seed = 0); // Constructor
     ~Level4(); // Destructor
 
-    Block* generateBlock() override; // Generates blocks with skewed probabilities for Level 3
+    Block* generateBlock() override; // Generates blocks with skewed probabilities for Level 4
+    void setSequenceMode(const std::string& filePath) override; // Switch to sequence mode
+    void setRandomMode() override; // Switch to random mode
 };
 
-#endif // LEVEL3_H
+#endif // LEVEL4_H

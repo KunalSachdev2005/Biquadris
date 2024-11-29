@@ -3,7 +3,7 @@
 
 // Constructor
 Player::Player(std::string playerName) 
-    : name(playerName), board(), score(), highScore(), level(nullptr), turns(0), isTurn(false) {
+    : name(playerName), board(), score(), level(nullptr), blocksSinceClear(0), isTurn(false), gameOver(false) {
     // Default level might be set elsewhere or through a setter
 }
 
@@ -16,9 +16,8 @@ Player::~Player() {
 std::string Player::getName() const { return name; }
 Board* Player::getBoard() { return &board; }
 Score& Player::getScore() { return score; }
-Score& Player::getHighScore() { return highScore; }
 Level* Player::getLevel() const { return level; }
-int Player::getTurns() const { return turns; }
+int Player::getBlocksSinceClear() const { return blocksSinceClear; }
 bool Player::getIsTurn() const { return isTurn; }
 
 // Setters
@@ -30,20 +29,15 @@ void Player::setLevel(Level* newLevel) {
 void Player::setIsTurn(bool turn) { isTurn = turn; }
 
 // Game-related methods
-void Player::incrementTurns() { ++turns; }
-
-void Player::updateHighScore() {
-    int currentScore = score.getScore();
-    int currentHighScore = highScore.getScore();
-    if (currentScore > currentHighScore) {
-        highScore.resetScore();
-        highScore.addScore(currentScore);
-    }
-}
+void Player::incrementTurn() { ++blocksSinceClear; }
 
 void Player::resetTurn() {
-    turns = 0;
+    blocksSinceClear = 0;
     isTurn = false;
+}
+
+void Player::setBlocksSinceClear(int i) {
+    blocksSinceClear = i;
 }
 
 Block* Player::generateNextBlock() {
@@ -53,4 +47,6 @@ Block* Player::generateNextBlock() {
     return nullptr;  // Or handle error appropriately
 }
 
+bool Player::isGameOver() { return gameOver; }
 
+void Player::setGameOver() { gameOver = true;}
