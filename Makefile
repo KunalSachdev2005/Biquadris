@@ -1,7 +1,7 @@
-# Compiler and flags
+# Compiler and flags # add -fsanitize=address after -g
 CXX = g++
 CXXFLAGS = -g -Wall -std=c++17 -I/usr/include -L/usr/lib/X11
-LDFLAGS = -lX11
+LDFLAGS = -lX11 #-lasan
 
 # Targets
 TARGET = biquadris
