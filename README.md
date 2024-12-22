@@ -10,7 +10,7 @@
 6. [Usage](#usage)
 7. [Technologies Used](#technologies-used)
 8. [Acknowledgments](#acknowledgments)
-9. [UML Class Diagram and Design Document](#links)
+9. [UML Class Diagram](#links)
 10. [Game Demo](#game-demo)
 
 ---
@@ -186,7 +186,6 @@ This project was collaboratively developed by Kunal Sachdev and Aarav Surana as 
 
 - **GitHub Repository**: [GitHub](https://github.com/KunalSachdev2005/Biquadris)
 - **UML Class Diagram**: [uml-final.pdf](./uml-final.pdf)
-- **Design Document**: [design.pdf](./design.pdf)
   
 ---
 
